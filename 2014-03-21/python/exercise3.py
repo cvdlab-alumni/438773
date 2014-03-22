@@ -11,7 +11,7 @@ f = CUBOID([10,10])
 wall = PROD([f , QUOTE([2])])
 
 cover = T([1,2,3])([-0.5 , -0.5 , 2])(PROD([CUBOID([11 , 11]) , QUOTE([0.5])]))
-cover = COLOR(GRAY)(cover)
+cover = COLOR([0.643 , 0.5174 , 0.376])(cover)
 
 verts1 = [[4.75 ,0, 0] , [4.75 , 0 , 1] , [4.25 , 0, 0] , [4.25 , 0 , 1]]
 cells1 = [[1,2,3,4]]
@@ -20,18 +20,22 @@ pols1 = [[1]]
 rect = MKPOL([verts1 , cells1 , pols1])
 
 window = COLOR(BROWN)(STRUCT([rect]))
+window2 = COLOR(BROWN)(ROTATE([1,2])(PI/2)(window))
+#window3 = ROTATE([1,2])(PI)(window2)
+
 #window = PROD([window , QUOTE([10])])
 
-floor = STRUCT([cover , wall, window])
+floor = COLOR([0.9098, 0.5921, 0.341])(STRUCT([cover , wall, window , window2]))
 #floor = DIFFERENCE([floor , window])
 
-floors =  STRUCT([fls for fls in create_floor(floor)])
+floors = STRUCT([fls for fls in create_floor(floor)])
 
 VIEW(floors)
 
-base = CUBOID([4.6 , 4.6])
-pt = MK([2.3 , 2.3 , 1.5])
-top = AA(JOIN)([base , pt])
+
+
+
+
 
 
 
