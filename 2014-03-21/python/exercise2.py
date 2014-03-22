@@ -88,7 +88,8 @@ floor6 = STRUCT([wall6 , COLOR(CYAN)(internal6)])
 
 floors = STRUCT([floor0 , floor1 , floor2 , floor3 , floor4 , floor5 , floor6])
 
-#VIEW(STRUCT([floors , faces]))
+muck_up_3D = STRUCT([floors , faces])
+#VIEW(muck_up_3D)
 
 
 
