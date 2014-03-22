@@ -13,16 +13,14 @@ def create_floor(f):
 
 
 domain2D = PROD([INTERVALS(2*PI)(32), INTERVALS(0.25)(1)])
-disk = T([1,3])([0.25,1])(MAP(disk2D)(domain2D))
+#disk = T([1,3])([0.25,1])(MAP(disk2D)(domain2D))
 
 verts1 = [[0.65 ,0, 0] , [0.65 , 0 , 1] , [0.15 , 0, 0] , [0.15 , 0 , 1]]
 cells1 = [[1,2,3,4]]
 pols1 = [[1]]
 
-#rect = PROD([QUOTE([0.5]) , QUOTE([1])])
-#rect2 = MAP([S1,S3])(rect)
 rect = MKPOL([verts1 , cells1 , pols1])
-window = COLOR(BROWN)(STRUCT([rect, disk]))
+window = COLOR(BROWN)(STRUCT([rect]))
 
 verts = [[0,0,0] , [0,0,2] , [10,0,2] , [10,0,0]]
 cells = [[1,2,3,4]]
