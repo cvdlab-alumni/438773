@@ -32,6 +32,9 @@ floors = STRUCT([fls for fls in create_floor(floor)])
 
 VIEW(floors)
 
+#exercise incomplete :(
+
+
 
 
 
