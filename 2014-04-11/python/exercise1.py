@@ -10,6 +10,11 @@ from mapper import *
 from pyplasm import *
 from larcc import * 
 
+######################################################
+# Funzione che crea una lista di hpc, dove ogni hpc 
+# corrisponde ad un piano della struttura.
+# ogni piano della struttura viene scalato automaticamente
+#####################################################
 
 def create_floor(f):
 	floors = []
