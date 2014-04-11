@@ -38,7 +38,7 @@ s = CUBOID([2,5])
 st = PROD([s, QUOTE([1])])
 
 stair = S([1,2,3])([0.5, 0.5, 0.5])(STRUCT([st , T([1,3])([1,1])(PROD([s, QUOTE([1])])) , T([1,3])([2,2])(PROD([s, QUOTE([1])]))]))
-
+stair = T()
 #VIEW(stair)
 
 solid_model_3D = STRUCT([floors , stair])
