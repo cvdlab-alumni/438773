@@ -10,6 +10,11 @@ from mapper import *
 from pyplasm import *
 from larcc import * 
 
+
+
+#BROW1 = rgb([101,67,33])
+#GREEN1 = rgb([3,192,60])
+
 #####################################################
 # Importo struttura esercizio 3
 #####################################################
@@ -532,26 +537,51 @@ marciapiede2 = T([1,2])([34,21])(marciapiede2)
 #####################################################
 
 marciapiede3 = R([1,2])(-PI/2)(marciapiede2)
-marciapiede3 = T([1,2])([3,-8])(marciapiede3)
+marciapiede3 = T([1,2])([-2,40])(marciapiede3) #-5
 
 #####################################################
 # Creazioen quarto marciapiede
 #####################################################
 
 #marciapiede4 = R([1,2])(-PI/2)(marciapiede3)
-marciapiede4 = T([1,2])([7,-13])(marciapiede3)
+marciapiede4 = T([1,2])([1,35])(marciapiede3)
 
-VIEW(STRUCT([marciapiede3 , marciapiede4]))
+#VIEW(STRUCT([field , marciapiede3 , marciapiede4]))
 
 #####################################################
+# Creazione albero
 #####################################################
+
+tronco = larRod([.15,1])([32,1])
+tronco = COLOR(GRAY)(STRUCT(MKPOLS(tronco)))
+tronco = COLOR([0.396 , 0.262 , 0.129])(tronco)
+
+chioma1 = larBall(0.2)([18,36])
+chioma1 = STRUCT(MKPOLS(chioma1))
+
+chioma1 = T(3)(1)(chioma1)
+
+chioma = STRUCT([chioma1 , T(2)(0.5)(chioma1) , T(2)(-0.5)(chioma1) ,T(1)(0.5)(chioma1),
+					T(1)(-0.5)(chioma1) , T(3)(0.5)(chioma1)])
+
+chioma = STRUCT([R([1,2,3])(-PI/2)(chioma) , R([1,2,3])(PI/2)(chioma) , 
+				R([1,2,3])(-PI/3)(chioma) , R([1,2,3])(PI/2)(chioma) ])
+chioma = STRUCT([ chioma , T(3)(0.25)(chioma) ,  T(3)(0.5)(SCALE([1,2])([0.7,0.7,0.7])(chioma))])
+
+chioma = COLOR([0.0117 , 0.752 , 0.235])(chioma)
+
+albero = STRUCT([tronco , chioma])
+albero2 = T([1,2])([15,10])(albero) # 10 10
+albero3 = T([1,2])([13,41])(albero)
+
+alberi = STRUCT([albero , albero2 , albero3])
 
 #####################################################
 # Assemblamento
 #####################################################
 
-#exercise_4 = STRUCT([total , marciapiede2 , marciapiede1 , marciapiede3 , marciapiede4])
-#VIEW(exercise_4)
+context = STRUCT([total , marciapiede2 , marciapiede1 , marciapiede3 , marciapiede4 , alberi])
+VIEW(context)
 
 
 
