@@ -26,6 +26,10 @@ def create_floor(f):
 	return floors
 
 
+#####################################################
+# Creazione di muri della struttura
+#####################################################
+
 w1 = CUBOID([10,10])
 w1 = PROD([w1, Q(3)])
 w2 = CUBOID([9,9])
