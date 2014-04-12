@@ -10,7 +10,9 @@ from mapper import *
 from pyplasm import *
 from larcc import * 
 
-#from exercise3 import *
+#####################################################
+# Importo struttura esercizio 3
+#####################################################
 
 
 def face2edge(FV):
@@ -443,18 +445,113 @@ total = STRUCT([field , building1 , building2 , all_struct])
 
 #VIEW(total)
 
+#####################################################
+# Creazione marciapiede
+#####################################################
+
+blocks = CUBOID([1,20])
+blocks = PROD([blocks , Q(0.2)])
+blocks = T([1,3])([0.25,0.1])(blocks)
+
+rialzo = CUBOID([1.5,20])
+rialzo = COLOR(RED)(PROD([rialzo , Q(0.3)]))
+
+road = COLOR([0.690,0,0])(DIFFERENCE([rialzo , blocks]))
+
+#VIEW(road)
+
+#####################################################
+#####################################################
+
+#####################################################
+# Creazione Lampione
+#####################################################
+
+palo = larRod([.05,1.2])([32,1])
+palo = COLOR(GRAY)(STRUCT(MKPOLS(palo)))
+
+torus = larTorus([0.05,0.08])()
+torus = STRUCT(MKPOLS(torus))
+
+palla = larBall(0.2)([18,36])
+palla = STRUCT(MKPOLS(palla))
+palla = COLOR(YELLOW)(T(3)(1.3)(palla))
+
+lampione = STRUCT([palo , torus , T(3)(0.5)(torus) , T(3)(1)(torus) , palla])
+
+#VIEW(lampione)
+
+#####################################################
+#####################################################
+
+#####################################################
+# Posizionamento lampioni
+#####################################################
+
+lampione = T([1,3])([0.12,0.3])(lampione)
+
+pair_y = [T(2)(4.8) , lampione]
+fila_lampioni1 = STRUCT(NN(4)(pair_y))
+fila_lampioni1 = STRUCT([fila_lampioni1 , lampione])
+
+fila_lampioni2 = T(1)(1.38)(fila_lampioni1)
+
+fila_lampioni = STRUCT([fila_lampioni1 , fila_lampioni2])
+
+marciapiede1 = STRUCT([fila_lampioni , road])
+marciapiede1 = T([1,2])([9,5])(marciapiede1)
+#VIEW(marciapiede1)
+
+#####################################################
+# Creazione secondo marciapiede
+#####################################################
+
+blocks2 = CUBOID([1,14])
+blocks2 = PROD([blocks2 , Q(0.2)])
+blocks2 = T([1,3])([0.25,0.1])(blocks2)
+
+rialzo2 = CUBOID([1.5,14])
+rialzo2 = COLOR(RED)(PROD([rialzo2 , Q(0.3)]))
+
+road2 = COLOR([0.690,0,0])(DIFFERENCE([rialzo2 , blocks2]))
+
+fila_lampioni3 = STRUCT(NN(3)(pair_y))
+fila_lampioni3 = STRUCT([fila_lampioni3 , lampione])
+
+fila_lampioni4 = T(1)(1.38)(fila_lampioni3)
+
+fila_lampioni5 = STRUCT([fila_lampioni3 , fila_lampioni4])
+
+marciapiede2 = STRUCT([fila_lampioni5 , road2])
+marciapiede2 = T([1,2])([34,21])(marciapiede2)
+#marciapiede2 = R([1,2])(-PI/2)(marciapiede2)
 
 
+#####################################################
+# Creazione terzo marciapiede
+#####################################################
 
+marciapiede3 = R([1,2])(-PI/2)(marciapiede2)
+marciapiede3 = T([1,2])([3,-8])(marciapiede3)
 
+#####################################################
+# Creazioen quarto marciapiede
+#####################################################
 
+#marciapiede4 = R([1,2])(-PI/2)(marciapiede3)
+marciapiede4 = T([1,2])([7,-13])(marciapiede3)
 
+VIEW(STRUCT([marciapiede3 , marciapiede4]))
 
+#####################################################
+#####################################################
 
+#####################################################
+# Assemblamento
+#####################################################
 
-
-
-
+#exercise_4 = STRUCT([total , marciapiede2 , marciapiede1 , marciapiede3 , marciapiede4])
+#VIEW(exercise_4)
 
 
 
