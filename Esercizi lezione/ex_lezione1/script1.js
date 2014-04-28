@@ -15,6 +15,7 @@ for(i = 1 ; i <= 10 ; i++){
 
 console.log(result);
 
+// Esercizio 2
 
 result2 = " "
 for(i = 1 ; i <= 10 ; i++){
@@ -26,6 +27,7 @@ for(i = 1 ; i <= 10 ; i++){
 
 console.log(result2);
 
+// Esercizio 3
 
 result3 = " "
 for(i = 1 ; i <= 10 ; i++){
