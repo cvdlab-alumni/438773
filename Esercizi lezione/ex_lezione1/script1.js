@@ -13,7 +13,8 @@ for(i = 1 ; i <= 10 ; i++){
 	}	
 }
 
-console.log(result);
+document.getElementById("ex1").innerHTML = result;
+alert(result);
 
 // Esercizio 2
 
@@ -25,7 +26,7 @@ for(i = 1 ; i <= 10 ; i++){
 	}	
 }
 
-console.log(result2);
+document.getElementById("ex2").innerHTML = result2;
 
 // Esercizio 3
 
@@ -37,4 +38,8 @@ for(i = 1 ; i <= 10 ; i++){
 	}	
 }
 
-console.log(result3);
+document.getElementById("ex3").innerHTML = result3;
+
+
+
+
