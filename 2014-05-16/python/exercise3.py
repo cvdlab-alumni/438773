@@ -41,7 +41,7 @@ def inserts_in_cells(master , diagram , cells):
 	return master
 
 def general_operation(master , diagram , to_add , to_remove , view_final_res = False):
-	master = inserts_in_cells(removes_cells(master , to_remove) , diagram , to_add)
+	master = inserts_in_cells(master , removes_cells(diagram , to_remove) , to_add)
 	if(view_final_res): view_numerating_cells(model)
 	return master
 
@@ -75,12 +75,9 @@ diagram = assemblyDiagramInit(shape2)(dimension2)
 master = inserts_in_cells(master , diagram , [1,3])
 
 view_numerating_cells(master)
-
 VIEW(DRAW_SKEL(master))
 
-
-"""Assemblamento di un 3-array"""
-master = general_operation(master, diagram , [2,4,6] , [20,32] , False)
+master = general_operation(master, diagram , [20,32] , [2,4,6]  , False)
 VIEW(DRAW_SKEL(master))
 VIEW(DRAW(master))
 
