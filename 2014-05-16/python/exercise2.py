@@ -1,8 +1,7 @@
-""" testing initial steps of Assembly Diagram construction """
 from pyplasm import *
 from scipy import *
 import os,sys
-""" import modules from larcc/lib """
+
 from lar2psm import *
 from simplexn import *
 from larcc import *
@@ -45,8 +44,6 @@ block1 = DRAW_SKEL(master)
 
 appartament = cellNumbering(master,block1)(range(len(CV)),RED,2)
 #VIEW(appartament)
-
-
 
 
 ######################
@@ -287,11 +284,6 @@ master = removes_elements(master , toRemove)
 # Esercizio 2
 ####################################
 
-stair = spiralStair(nturns = 10)
-stair = DRAW(stair)
-stair = T([1,2])([-1,6.5])(stair)
-#condominio_all = STRUCT([stair , condominio])
-#VIEW(condominio_all)
 
 
 #####################

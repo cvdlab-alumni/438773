@@ -1,8 +1,7 @@
-""" testing initial steps of Assembly Diagram construction """
 from pyplasm import *
 from scipy import *
 import os,sys
-""" import modules from larcc/lib """
+
 from lar2psm import *
 from simplexn import *
 from larcc import *
