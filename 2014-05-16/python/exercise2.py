@@ -361,6 +361,8 @@ vaso2 = COLOR(RED)(T([1,2])([9,9])(vaso1))
 vaso3 = COLOR(RED)(T([1,2])([3,9])(vaso1))
 
 terreno = COLOR(GREEN)(CUBOID([30,30]))
+
+condominio = COLOR([0.82,0.70,0.54])(STRUCT([condominio]))
 condominio = STRUCT([condominio , vaso2 , vaso3 , terreno])
 
 
