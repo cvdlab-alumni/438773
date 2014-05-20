@@ -27,9 +27,10 @@ def view_numerating_cells(master):
 	VIEW(hpc)
 
 def inserts_elements(master , diagram , cells):
+	cells.sort(reverse=True)
 	for i,item in enumerate(cells):
-		diagram = diagram2cell(master , diagram , item)
-	return diagram
+		master = diagram2cell(diagram , master , item)
+	return master
 
 DRAW = COMP([STRUCT,MKPOLS])
 DRAW_SKEL = COMP([SKEL_1,STRUCT,MKPOLS])
@@ -230,9 +231,6 @@ master = removes_elements(master , toRemove)
 ########################
 ########################
 
-
-view_numerating_cells(master)
-
 toMerge = 17
 shape_r9 = [1,3,2]
 dimesione_r9 = [[0.3] ,[1.58,0.92,1.5], [2.2,0.8]]
@@ -290,12 +288,14 @@ master = removes_elements(master , toRemove)
 # Inserimento piani
 #####################
 
-condominio = assemblyDiagramInit([1,1,8])([[12.3],[10],[4,0.4]*4])
-#VIEW(DRAW(condominio))
-#view_numerating_cells(condominio)
+master_condominio = assemblyDiagramInit([3,1,1])([[12.3,3,12.3] , [10] , [17.6]])
+VIEW(DRAW_SKEL(master_condominio))
+#view_numerating_cells(master_condominio)
 
-condominio =  inserts_elements(master,condominio,[2,3,4])
-#VIEW(DRAW(condominio))
+condominio_p1 = assemblyDiagramInit([1,1,8])([[12.3],[10],[4,0.4]*4])
+master_condominio = inserts_elements(master_condominio , condominio_p1 , [0,2])
+
+VIEW(DRAW_SKEL(master_condominio))
 
 ####################################
 # Costruzione base
@@ -375,6 +375,6 @@ obj3 = rotationalSurface2(profile)
 vaso4 = COLOR(ORANGE)(T([1,2])([4,4])(obj3))
 condominio = STRUCT([condominio , vaso2 , vaso3 , vaso4 , terreno])
 
-VIEW(condominio)
+#VIEW(condominio)
 
 
