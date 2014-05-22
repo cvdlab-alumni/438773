@@ -13,6 +13,7 @@ from sysml import *
 from splines import *
 
 from utilities import *
+from sysmlObject import *
 
 
 def removes_elements((V,CV) , indices_remove):
@@ -242,10 +243,19 @@ master = diagram2cell(wall5 , master , toMerge)
 VIEW(DRAW_SKEL(master))
 
 
+view_numerating_cells(master)
+
 windowsChain = [50,59,67,68,74,27,32,33,41,42,48]
-doorChain = [75,83,90,86] # 98 --> porta cucina ? 
+doorChain = [104,84,92,98] # 98 --> porta cucina ? 
 
 
+windows = get_windows()
+door = get_door()
+
+master = inserts_in_cells(master , door , doorChain)
+
+VIEW(DRAW_SKEL(master))
+VIEW(DRAW(master))
 
 
 
