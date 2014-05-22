@@ -12,6 +12,7 @@ from boolean import *
 from sysml import *
 from splines import *
 
+from utilities import *
 
 
 def removes_elements((V,CV) , indices_remove):
@@ -38,8 +39,6 @@ appartament = cellNumbering(master,block1)(range(len(CV)),RED,2)
 VIEW(appartament)
 
 
-
-
 ######################
 # Prima camera
 ######################
@@ -48,22 +47,17 @@ toMerge = 9
 shape_r1 = [3,3,1]
 dimesione_r1 = [[7,0.3,7] , [6,0.3,4] , [3]]
 
-view_numerating_cells(master)
-
 cell = MKPOL([master[0],[[v+1 for v in  master[1][toMerge]]],None])
 VIEW(STRUCT([appartament,cell]))
 
 room1 = assemblyDiagramInit(shape_r1)(dimesione_r1)
 master = diagram2cell(room1 , master , toMerge)
-block2 = DRAW_SKEL(master)
-block2 = cellNumbering(master,block2)(range(len(master[1])),CYAN,2)
 
-VIEW(block2)
+VIEW(DRAW_SKEL(master))
 
 toRemove = [23]
 master = removes_elements(master , toRemove)
 VIEW(DRAW(master))
-
 
 ######################
 # Seconda camera
@@ -73,22 +67,19 @@ toMerge = 17
 shape_r2 = [1,3,1]
 dimesione_r2 = [[5] , [4,0.3,2] , [3]]
 
-view_numerating_cells(master)
+#view_numerating_cells(master)
 
 cell = MKPOL([master[0],[[v+1 for v in  master[1][toMerge]]],None])
 VIEW(STRUCT([appartament,cell]))
 
 room2 = assemblyDiagramInit(shape_r2)(dimesione_r2)
 master = diagram2cell(room2 , master , toMerge)
-block3 = DRAW_SKEL(master)
-block3 = cellNumbering(master,block3)(range(len(master[1])),CYAN,2)
 
-VIEW(block3)
+VIEW(DRAW_SKEL(master))
 
 toRemove = [24]
 master = removes_elements(master , toRemove)
 VIEW(DRAW(master))
-
 
 
 ######################
@@ -102,6 +93,7 @@ VIEW(DRAW(master))
 ######################
 # Quarta camera
 ######################
+
 
 toRemove = [18]
 master = removes_elements(master , toRemove)
@@ -123,10 +115,8 @@ VIEW(STRUCT([appartament,cell]))
 
 room5 = assemblyDiagramInit(shape_r5)(dimesione_r5)
 master = diagram2cell(room5 , master , toMerge)
-block4 = DRAW_SKEL(master)
-block4 = cellNumbering(master,block4)(range(len(master[1])),CYAN,2)
 
-VIEW(block4)
+VIEW(DRAW(master))
 
 toRemove = [25]
 master = removes_elements(master , toRemove)
@@ -165,10 +155,6 @@ block5 = cellNumbering(master,block5)(range(len(master[1])),CYAN,2)
 
 VIEW(block5)
 
-toRemove = [27,32,33,41,42,48]
-master = removes_elements(master , toRemove)
-VIEW(DRAW(master))
-
 
 ########################
 # 
@@ -189,15 +175,8 @@ VIEW(STRUCT([appartament,cell]))
 
 wall2 = assemblyDiagramInit(shape_r7)(dimesione_r7)
 master = diagram2cell(wall2 , master , toMerge)
-block6 = DRAW_SKEL(master)
-block6 = cellNumbering(master,block6)(range(len(master[1])),CYAN,2)
 
-VIEW(block6)
-
-toRemove = [50,59,67,68,74]
-master = removes_elements(master , toRemove)
-VIEW(DRAW(master))
-
+VIEW(DRAW_SKEL(master))
 
 
 ########################
@@ -218,14 +197,9 @@ VIEW(STRUCT([appartament,cell]))
 
 wall3 = assemblyDiagramInit(shape_r8)(dimesione_r8)
 master = diagram2cell(wall3 , master , toMerge)
-block7 = DRAW_SKEL(master)
-block7 = cellNumbering(master,block7)(range(len(master[1])),CYAN,2)
 
-VIEW(block7)
+VIEW(DRAW_SKEL(master))
 
-toRemove = [75,83]
-master = removes_elements(master , toRemove)
-VIEW(DRAW(master))
 
 ########################
 ########################
@@ -245,14 +219,8 @@ VIEW(STRUCT([appartament,cell]))
 
 wall4 = assemblyDiagramInit(shape_r9)(dimesione_r9)
 master = diagram2cell(wall4 , master , toMerge)
-block8 = DRAW_SKEL(master)
-block8 = cellNumbering(master,block8)(range(len(master[1])),CYAN,2)
 
-VIEW(block8)
-
-toRemove = [86]
-master = removes_elements(master , toRemove)
-VIEW(DRAW(master))
+VIEW(DRAW_SKEL(master))
 
 ########################
 ########################
@@ -270,15 +238,12 @@ VIEW(STRUCT([appartament,cell]))
 
 wall5 = assemblyDiagramInit(shape_r10)(dimesione_r10)
 master = diagram2cell(wall5 , master , toMerge)
-block9 = DRAW_SKEL(master)
-block9 = cellNumbering(master,block9)(range(len(master[1])),CYAN,2)
 
-VIEW(block9)
+VIEW(DRAW_SKEL(master))
 
-toRemove = [90, 98]
-master = removes_elements(master , toRemove)
-VIEW(DRAW(master))
 
+windowsChain = [50,59,67,68,74,27,32,33,41,42,48]
+doorChain = [75,83,90,86] # 98 --> porta cucina ? 
 
 
 
