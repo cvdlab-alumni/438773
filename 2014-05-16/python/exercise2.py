@@ -17,7 +17,7 @@ from architectural import *
 
 def removes_elements((V,CV) , indices_remove):
 	return V,[cell for k,cell in enumerate(CV) if not (k in indices_remove)]
-
+	
 def select_elements((V,CV) , indices):
 	return V,[cell for k,cell in enumerate(CV) if (k in indices)]
 
@@ -290,7 +290,6 @@ master = removes_elements(master , toRemove)
 
 master_condominio = assemblyDiagramInit([3,1,1])([[12.3,3,12.3] , [10] , [17.6]])
 VIEW(DRAW_SKEL(master_condominio))
-#view_numerating_cells(master_condominio)
 
 condominio_p1 = assemblyDiagramInit([1,1,8])([[12.3],[10],[4,0.4]*4])
 master_condominio = inserts_elements(master_condominio , condominio_p1 , [0,2])
