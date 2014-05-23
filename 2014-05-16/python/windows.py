@@ -19,6 +19,9 @@ from utilities import *
 def get_windows():
 	return master_w1;
 
+def get_windows_big():
+	return master_big;
+
 """Create double Window"""
 shape = [6,3,3]
 dimension = [[0.1,0.4,0.1,0.1,0.4,0.1] , [0.05,0.2,0.05] , [0.1,1.35,0.1]]
@@ -41,6 +44,10 @@ toRemove = [10,16]
 master_w2 = removes_cells(master_w2 , toRemove)
 
 #VIEW(DRAW(master_w2))
+
+
+"""Create big windows"""
+ 
 
 
 

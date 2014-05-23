@@ -24,6 +24,9 @@ def view_numerating_cells(master):
 	hpc = cellNumbering (master,hpc)(range(len(master[1])),CYAN,2)
 	VIEW(hpc)
 
+def get_master():
+	return master;
+
 
 DRAW = COMP([STRUCT,MKPOLS])
 DRAW_SKEL = COMP([SKEL_1,STRUCT,MKPOLS])
@@ -242,20 +245,67 @@ master = diagram2cell(wall5 , master , toMerge)
 
 VIEW(DRAW_SKEL(master))
 
-
 view_numerating_cells(master)
 
-windowsChain = [50,59,67,68,74,27,32,33,41,42,48]
-doorChain = [104,84,92,98] # 98 --> porta cucina ? 
+windowsChain = [23,44,77,53]
+doorChain = [104,84,92,98]
 
+bigWindowsChain = [27,28,36,37,67,68,52,53]
 
 windows = get_windows()
 door = get_door()
 
 master = inserts_in_cells(master , door , doorChain)
+master = inserts_in_cells(master , windows , windowsChain)
+master = removes_elements(master , bigWindowsChain)
 
 VIEW(DRAW_SKEL(master))
 VIEW(DRAW(master))
+
+########################
+# Creazione balconi
+########################
+ 
+balcony_x = get_balcony_x()
+balcony_y = get_balcony_y()
+
+shape = [3,1,1]
+dimension = [[1.6,12,1.6] , [10] , [3]]
+model = assemblyDiagramInit(shape)(dimension)
+
+model = inserts_in_cells(model , balcony_y , [2])
+model = inserts_in_cells(model , balcony_x , [0])
+
+master = inserts_in_cells(model , master , [0])
+
+toRemove = [1,2,3,0,29,30,28,27]
+master = removes_elements(master , toRemove)
+
+VIEW(DRAW(master))
+
+view_numerating_cells(master)
+
+toMerge = [55]
+shape = [3,1,2]
+dimension = [[3,1,8] , [0.3] , [2.2,0.8]]
+
+main_door = assemblyDiagramInit(shape)(dimension)
+master = inserts_in_cells(master , main_door , toMerge)
+
+view_numerating_cells(master)
+
+mainDoor = [409]
+master = inserts_in_cells(master , door , mainDoor)
+
+VIEW(DRAW_SKEL(master))
+
+
+
+
+
+
+
+
 
 
 

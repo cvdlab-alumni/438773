@@ -28,6 +28,7 @@ def view_numerating_cells(master):
 	Se view_final_res = true stampa il risultato finale"""
 
 def removes_cells((V,CV) , indices_remove , view_final_res = False):
+	indices_remove.sort(reverse=True)
 	model = V,[cell for k,cell in enumerate(CV) if not (k in indices_remove)]
 	if(view_final_res): view_numerating_cells(model)
 	return model
@@ -47,3 +48,16 @@ def general_operation(master , diagram , to_add , to_remove , view_final_res = F
 	if(view_final_res): view_numerating_cells(model)
 	return master
 
+
+
+def rotationalSurface2(profile):
+	domain = EMBED(1)(PROD([ Hpc(Grid([10*[1./10]])),  Hpc(Grid([30*[2*PI/30]])) ]))
+	mapping = ROTATIONALSURFACE(profile)
+	obj = MAP(mapping)(domain)
+	return obj
+
+def create_profile(controlPoints):
+	b1 = BEZIER(S1)(controlPoints[0])
+	b2 = BEZIER(S1)(controlPoints[1])
+	profile = BEZIER(S1)([b1,b2])
+	return profile
