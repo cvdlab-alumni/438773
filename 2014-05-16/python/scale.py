@@ -98,6 +98,3 @@ master_stair = STRUCT([stair, stair2  , DRAW(master)])
 
 
 
-
-
-
