@@ -17,12 +17,6 @@ from utilities import *
 from exercise1 import *
 
 
-####################################
-# Esercizio 2
-####################################
-
-
-
 #####################
 # Inserimento piani
 #####################
@@ -43,12 +37,34 @@ master_condominio = inserts_in_cells(master_condominio , apartament , toMerge)
 
 toRemove = [11,13,12,6,5]
 master_condominio = removes_cells(master_condominio , toRemove)
-VIEW(DRAW(master_condominio))
-view_numerating_cells(master_condominio)
+#VIEW(DRAW(master_condominio))
+#view_numerating_cells(master_condominio)
 
 
 toMerge = [8]
-terrazzo = assemblyDiagramInit([3,3,3])([[0.2,14.8,0.2] , [0.2,9.9,0.2] , [1.4,0.1,1.5]])
+terrazzo = assemblyDiagramInit([3,3,3])([[0.4,14.8,0.4] , [0.4,9.9,0.4] , [1.4,0.1,1.5]])
+master_condominio = inserts_in_cells(master_condominio , terrazzo , toMerge)
+view_numerating_cells(master_condominio)
+
+toRemove = [1306]
+master_condominio = removes_cells(master_condominio , [1306])
+VIEW(DRAW(master_condominio))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ####################################
 # Costruzione curve
