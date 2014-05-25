@@ -18,6 +18,12 @@ from exercise1 import *
 from scale import *
 
 
+def TREE():
+	tronco = COLOR([0.396 , 0.262 , 0.129])(CYLINDER([0.20,2.5])(25))
+	chioma = T(3)(1.4+2.5)(COLOR([0.0117 , 0.752 , 0.235])(SPHERE(1.4)([16,16])))
+	chioma2 = T(3)(2.4+2.5)(COLOR([0.0117 , 0.752 , 0.235])(SPHERE(1)([10,10])))
+	return STRUCT([tronco , chioma2 , chioma])
+
 #####################
 # Inserimento piani
 #####################
@@ -81,7 +87,18 @@ obj3 = rotationalSurface2(profile)
 vaso1 = COLOR([0.87,0.49,0.37])(T([1,2,3])([5,7,0.5])(obj3))
 vaso2 = COLOR([0.87,0.49,0.37])(T([1,2,3])([5,17,0.5])(obj3))
 
-VIEW(STRUCT([master_build , vaso1 , vaso2 , terreno , walk]))
 
+####################################
+#  Inserimento alberi
+####################################
+
+tree1 = TREE()
+tree1 = T([1,2,3])([2,7,0.5])(tree1)
+tree2 = T([2,3])([10,0.5])(tree1)
+tree3 = T(1)(6)(tree1)
+tree4 = T(1)(6)(tree2)
+
+all_structure = STRUCT([master_build , vaso1 , vaso2 , terreno , walk , tree1 , tree2 , tree3 , tree4])
+VIEW(all_structure)
 
 

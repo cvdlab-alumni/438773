@@ -97,4 +97,3 @@ stair2 = tensor4(S([3])([-1])(stair))
 master_stair = STRUCT([stair, stair2  , DRAW(master)])
 
 
-
