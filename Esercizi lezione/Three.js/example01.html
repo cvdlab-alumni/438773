@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+ <head> 
+  <title>Example 1 - Basic skeleton</title> 
+  <style>
+    body{
+      margin: 0;
+      overflow: hidden;
+    }
+  </style> 
+  </head> 
+  <body>
+    <!-- JavaScript libraries -->
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/three.js/r67/three.min.js"></script> 
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script> 
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/stats.js/r11/Stats.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.5/dat.gui.min.js"></script>
+    <script src="assets/libs/TrackballControls.js"></script>
+
+    <!-- Javascript code that runs our Three.js examples --> 
+    <script>
+      // once everything is loaded, we run our Three.js stuff.
+      $(
+         
+        function () {
+		
+      		var scene = new THREE.Scene()
+      		
+      		var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+          var inspectedCamera = new THREE.PerspectiveCamera(10, window.innerWidth / window.innerHeight, 10, 100);
+
+          var trackballControls = new THREE.TrackballControls(camera);
+
+      		renderer = new THREE.WebGLRenderer();
+          renderer.setClearColor(new THREE.Color(0xEEEEEE));
+          renderer.setSize(window.innerWidth, window.innerHeight);
+
+          var planeGeometry = new THREE.PlaneGeometry(60,60)
+          var planeMaterial = new THREE.MeshLambertMaterial({color: 0x2E8B57});
+          planeMaterial.side = THREE.DoubleSide;
+          var plane = new THREE.Mesh(planeGeometry,planeMaterial);
+      		
+          plane.rotation.x=-0.5*Math.PI;
+      	  plane.position.set(0,0,0);
+
+      		var geometry = new THREE.CylinderGeometry(2,2,20,32)
+      		var material = new THREE.MeshLambertMaterial( {color: 0x964B00} );
+      		var tronco = new THREE.Mesh( geometry, material );
+      		
+      		tronco.position.set(0,10,0)
+      		
+      		var sphereGeometry = new THREE.SphereGeometry(4,20,20);
+          var sphereMaterial = new THREE.MeshLambertMaterial({color: 0x3CB371 });
+          chioma = new THREE.Mesh(sphereGeometry,sphereMaterial);
+          chioma.position.set(0,20,0);
+
+          // add subtle ambient lighting
+          var ambientLight = new THREE.AmbientLight(0x0c0c0c);
+
+          // add spotlight for the shadows
+          var spotLight = new THREE.SpotLight( 0xffffff );
+          spotLight.position.set(-40,60,-10);
+
+          scene.add(ambientLight);
+          scene.add(spotLight);
+      		scene.add(plane);
+      		scene.add(chioma);
+      		scene.add(tronco);
+      		
+      		camera.position.set(-60,20,30);
+          camera.up = new THREE.Vector3(0,1,0);
+          camera.lookAt(scene.position);
+
+          inspectedCamera.position.set(30,40,-30);
+          inspectedCamera.up = new THREE.Vector3(0,1,0);
+          inspectedCamera.lookAt(scene.position);
+      		
+          var axisHelper = new THREE.AxisHelper(3);
+          scene.add(axisHelper);
+      		
+
+          var cameraHelper = new THREE.CameraHelper(inspectedCamera);
+          scene.add(inspectedCamera);
+          scene.add(cameraHelper);
+
+          $('body').append(renderer.domElement)
+              
+          var step = 0;
+          
+          var controls = new function () {
+              this.X = 0;
+              this.Z = 0;
+              this.radius = 1;
+
+              this.lightPositionX = 0; 
+              this.lightPositionY = 0; 
+              this.lightPositionZ = 0; 
+
+              this.showAxisHelper = true;
+              this.inspectedCamera = false;
+          }
+
+          var gui = new dat.GUI();
+          gui.add(controls, 'X',0,1);
+          gui.add(controls , 'Z',0,1);
+          var axisControls = gui.add(controls , 'showAxisHelper');
+          gui.add(controls , 'radius' , 0 , 20);
+          var cameraControl = gui.add(controls , 'inspectedCamera');
+          gui.add(controls , 'lightPositionX',0,60);
+          gui.add(controls , 'lightPositionY',0,60);
+          gui.add(controls , 'lightPositionZ',0,60);
+          
+          animation();
+
+          axisControls.onChange(function (value) {
+           axisHelper.visible = value;
+          });
+
+          var renderCamera = camera;
+          
+          cameraControl.onChange(function (value){
+            renderCamera = value ? inspectedCamera : camera;
+          });
+
+          function animation(){
+            
+            trackballControls.update();
+            cameraHelper.update();
+
+            chioma.position.x = (controls.X*60) - 30;
+            chioma.position.z = (controls.Z*60) - 30;
+        		chioma.scale.set(controls.radius , controls.radius , controls.radius);
+
+            tronco.position.x = (controls.X*60) - 30;
+            tronco.position.z = (controls.Z*60) - 30;
+            
+            spotLight.position.set(controls.lightPositionX , controls.lightPositionY , controls.lightPositionZ);
+
+            // render using requestAnimationFrame
+          	requestAnimationFrame(animation);
+          	renderer.render(scene, renderCamera);
+          }
+    });
+    </script>  
+ </body>
+</html>
