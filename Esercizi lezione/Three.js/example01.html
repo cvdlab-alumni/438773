@@ -21,6 +21,11 @@
     <script>
       // once everything is loaded, we run our Three.js stuff.
       $(
+
+        function getRandomArbitrary(min, max) {
+          
+          return Math.random() * (max - min) + min;
+        }
          
         function () {
 		
@@ -102,6 +107,8 @@
 
               this.showAxisHelper = true;
               this.inspectedCamera = false;
+
+              this.generateTree = function(){ addTree2Scene() };
           }
 
           var gui = new dat.GUI();
@@ -117,6 +124,8 @@
           gui.add(controls , 'cameraViewX',-100,100);
           gui.add(controls , 'cameraViewY',-100,100);
           gui.add(controls , 'cameraViewZ',-100,100);
+
+          gui.add(controls , 'generateTree');
 
           animation();
 
@@ -150,6 +159,54 @@
             // render using requestAnimationFrame
           	requestAnimationFrame(animation);
           	renderer.render(scene, renderCamera);
+          }
+
+          function animationTrees(){
+
+            var positionX = this.getRandomArbitrary(-30 , 30);
+            var positionY = 0
+            var positionZ = this.getRandomArbitrary(-30 , 30);
+}
+          }
+
+          function generateTree(){
+
+            var geometry_t = new THREE.CylinderGeometry(2,2,20,32)
+            var material_t = new THREE.MeshLambertMaterial( {color: 0x964B00} );
+            var tronco_t = new THREE.Mesh( geometry_t , material_t );
+            tronco_t.position.set(0,10,0);
+
+            var sphereGeometry_t = new THREE.SphereGeometry(4,20,20);
+            var sphereMaterial_t = new THREE.MeshLambertMaterial({color: 0x3CB371 });
+            var chioma_t = new THREE.Mesh(sphereGeometry_t ,sphereMaterial_t );
+            chioma_t.position.set(0,20,0);
+
+            return {'tronco' : tronco_t , 'chioma' : chioma_t}
+          }
+
+          function addTree2Scene(){
+
+            var scaleFactorX = Math.ceil(Math.random() * 4 );
+            var scaleFactorY = Math.ceil(Math.random() * 4 );
+            var scaleFactorZ = Math.ceil(Math.random() * 4 );
+
+            var positionX = Math.ceil(Math.random() * 30);
+            var positionY = 0
+            var positionZ = Math.ceil(Math.random() * 30);
+
+            var tree = generateTree();
+
+            var tronco = tree['tronco'];
+            var chioma = tree['chioma'];
+
+            tronco.position.set(positionX , 10 , positionZ);
+            //tronco.scale.set(scaleFactorX , scaleFactorY , scaleFactorZ);
+
+            chioma.position.set(positionX , 20 , positionZ);
+            //chioma.scale.set(scaleFactorX , scaleFactorY , scaleFactorZ);
+
+            scene.add(chioma);
+            scene.add(tronco);
           }
     });
     </script>  
