@@ -11,10 +11,10 @@
   </head> 
   <body>
     <!-- JavaScript libraries -->
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/three.js/r67/three.min.js"></script> 
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script> 
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/stats.js/r11/Stats.min.js"></script>
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.5/dat.gui.min.js"></script>
+    <script src="assets/libs/three.min.js"></script> 
+    <script src="assets/libs/jquery.min.js"></script> 
+    <script src="assets/libs/Stats.min.js"></script>
+    <script src="assets/libs/dat.gui.min.js"></script>
     <script src="assets/libs/TrackballControls.js"></script>
 
     <!-- Javascript code that runs our Three.js examples --> 
@@ -52,7 +52,7 @@
       		
       		var sphereGeometry = new THREE.SphereGeometry(4,20,20);
           var sphereMaterial = new THREE.MeshLambertMaterial({color: 0x3CB371 });
-          chioma = new THREE.Mesh(sphereGeometry,sphereMaterial);
+          var chioma = new THREE.Mesh(sphereGeometry,sphereMaterial);
           chioma.position.set(0,20,0);
 
           // add subtle ambient lighting
@@ -79,7 +79,6 @@
           var axisHelper = new THREE.AxisHelper(3);
           scene.add(axisHelper);
       		
-
           var cameraHelper = new THREE.CameraHelper(inspectedCamera);
           scene.add(inspectedCamera);
           scene.add(cameraHelper);
@@ -97,6 +96,10 @@
               this.lightPositionY = 0; 
               this.lightPositionZ = 0; 
 
+              this.cameraViewX = 0;
+              this.cameraViewY = 0;              
+              this.cameraViewZ = 0;
+
               this.showAxisHelper = true;
               this.inspectedCamera = false;
           }
@@ -106,11 +109,15 @@
           gui.add(controls , 'Z',0,1);
           var axisControls = gui.add(controls , 'showAxisHelper');
           gui.add(controls , 'radius' , 0 , 20);
+          gui.add(controls , 'lightPositionX',0,100);
+          gui.add(controls , 'lightPositionY',0,100);
+          gui.add(controls , 'lightPositionZ',0,100);
+
           var cameraControl = gui.add(controls , 'inspectedCamera');
-          gui.add(controls , 'lightPositionX',0,60);
-          gui.add(controls , 'lightPositionY',0,60);
-          gui.add(controls , 'lightPositionZ',0,60);
-          
+          gui.add(controls , 'cameraViewX',-100,100);
+          gui.add(controls , 'cameraViewY',-100,100);
+          gui.add(controls , 'cameraViewZ',-100,100);
+
           animation();
 
           axisControls.onChange(function (value) {
@@ -136,6 +143,9 @@
             tronco.position.z = (controls.Z*60) - 30;
             
             spotLight.position.set(controls.lightPositionX , controls.lightPositionY , controls.lightPositionZ);
+
+            scene.position.set(controls.cameraViewX , controls.cameraViewY , controls.cameraViewZ);
+            inspectedCamera.lookAt(scene.position);
 
             // render using requestAnimationFrame
           	requestAnimationFrame(animation);
