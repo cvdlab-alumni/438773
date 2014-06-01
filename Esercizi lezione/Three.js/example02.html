@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
  <head> 
-  <title>Example 1 - Basic skeleton</title> 
+  <title>Foresta di alberi</title> 
   <style>
     body{
       margin: 0;
@@ -11,67 +11,273 @@
   </head> 
   <body>
     <!-- JavaScript libraries -->
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/three.js/r67/three.min.js"></script> 
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script> 
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/stats.js/r11/Stats.min.js"></script>
-    <!-- Javascript code that runs our Three.js examples --> 
-    <script>
-      // once everything is loaded, we run our Three.js stuff.
-      $(function () {
-		
-		scene = new THREE.Scene()
-		
-		camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+      <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script> 
+      <script src="http://cdnjs.cloudflare.com/ajax/libs/three.js/r67/three.min.js"></script>
+      <script src="http://cdnjs.cloudflare.com/ajax/libs/stats.js/r11/Stats.min.js"></script>
+      <script src="http://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.5/dat.gui.min.js"></script>
+      <script src="assets/libs/TrackballControls.js"></script>
+        <!-- Javascript code that runs our Three.js examples --> 
+    
+    <script >
+        $(
+        function () {
+    
+          var scene = new THREE.Scene()
+          
+          var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
 
-		renderer = new THREE.WebGLRenderer();
-        renderer.setClearColor(new THREE.Color(0xEEEEEE));
-        renderer.setSize(window.innerWidth, window.innerHeight);
+          var inspectedCamera = new THREE.PerspectiveCamera(10, window.innerWidth / window.innerHeight, 10, 10);
 
-        var planeGeometry = new THREE.PlaneGeometry(60,20);
-        var planeMaterial = new THREE.MeshBasicMaterial({color: 0x2E8B57});
-        var plane = new THREE.Mesh(planeGeometry,planeMaterial);
-		
-        plane.rotation.x=-0.5*Math.PI;
-	    plane.position.set(15,0,0);
+          var trackballControls = new THREE.TrackballControls(camera);
 
-		var geometry = new THREE.CylinderGeometry(2,2,20,32)
-		var material = new THREE.MeshBasicMaterial( {color: 0x964B00} );
-		var tronco = new THREE.Mesh( geometry, material );
-		
-		tronco.position.set(5,0,0)
-		
-		var sphereGeometry = new THREE.SphereGeometry(4,20,20);
-        var sphereMaterial = new THREE.MeshBasicMaterial({color: 0x3CB371 });
-        var chioma = new THREE.Mesh(sphereGeometry,sphereMaterial);
+          renderer = new THREE.WebGLRenderer();
+          renderer.setClearColor(new THREE.Color(0xEEEEEE));
+          renderer.setSize(window.innerWidth, window.innerHeight);
+          renderer.shadowMapEnabled = true;
 
-        chioma.position.set(5,10,0);
+          var cubeGeometry = new THREE.BoxGeometry(60, 10, 60);
+          var meshMaterial = new THREE.MeshLambertMaterial({color: 0x3CB371});
+          var cube = new THREE.Mesh(cubeGeometry, meshMaterial);
+          cube.position.set(0,0,0);
+          cube.receiveShadow = true;
 
-		scene.add(plane)
-		scene.add(chioma)
-		scene.add(tronco)
-		
-		camera.position.set(-30,20,30);
-        camera.up = new THREE.Vector3(0,1,0);
-        camera.lookAt(scene.position);
-		
-		$('body').append(renderer.domElement)
-        
-        var step = 0;
-        animation();
-        
-        function animation(){
-        				
-			step+=0.04;
-          	camera.position.x = 2 +( 10*(Math.cos(step)));
-          	camera.position.z = 2 +( 10*(Math.sin(step)));
-			camera.lookAt(scene.position)
-			
-          	// render using requestAnimationFrame
-          	requestAnimationFrame(animation);
-          	renderer.render(scene, camera);
-        	
-        }
-      });
-    </script>  
+          var albero = generateTree();  
+          albero.position.set(15,5,15);
+          albero.castShadow = true;
+
+          var earth = new THREE.Object3D();
+          earth.add(albero);
+          earth.add(cube)
+
+          var ambiColor = "#1c1c1c";
+          var ambientLight = new THREE.AmbientLight(ambiColor);
+          
+          // add spotlight for the shadows
+          var pointColor = "#ffffff";
+          var spotLight = new THREE.SpotLight(pointColor);
+          spotLight.position.set(0,90,0);
+          spotLight.castShadow = true;
+          spotLight.shadowCameraNear = 2;
+          spotLight.shadowCameraFar = 30;
+          spotLight.shadowCameraFov = 70;
+          spotLight.shadowDarkness = 0.5;
+          spotLight.shadowMapWidth = 256;
+          spotLight.shadowMapHeight = 256;
+          spotLight.shadow; 
+
+          var spotLightHelper = new THREE.SpotLightHelper(spotLight); 
+
+          /*var pointColor = "#ff5808";
+          var directionalLight = new THREE.DirectionalLight(pointColor);
+          directionalLight.target = earth;
+          directionalLight.position.set(0, 60, 0);
+          directionalLight.castShadow = true;
+          directionalLight.shadowCameraNear = 2;
+          directionalLight.shadowCameraFar = 50;
+          directionalLight.shadowCameraLeft = -20;
+          directionalLight.shadowCameraRight = 10;
+          directionalLight.shadowCameraTop = 20;
+          directionalLight.shadowCameraBottom = -20;
+
+          //directionalLight.shadowCameraVisible = true;
+
+          directionalLight.intensity = 0.5;
+          directionalLight.shadowMapHeight = 1024;
+          directionalLight.shadowMapWidth = 1024;       
+          */
+          
+          var sphereLight = new THREE.SphereGeometry(0.5);
+          var sphereLightMaterial = new THREE.MeshBasicMaterial({color: 0xac6c25});
+          var sphereLightMesh = new THREE.Mesh(sphereLight, sphereLightMaterial);
+
+          sphereLightMesh.position = spotLight.position;
+
+          camera.position.set(-200,50,-100);
+          camera.up = new THREE.Vector3(0,1,0);
+          camera.lookAt(scene.position);
+
+          inspectedCamera.position.set(30,40,-30);
+          inspectedCamera.up = new THREE.Vector3(0,1,0);
+          inspectedCamera.lookAt(scene.position);
+          
+          var axisHelper = new THREE.AxisHelper(3);
+          
+          var cameraHelper = new THREE.CameraHelper(inspectedCamera);
+
+          scene.add(earth);
+          scene.add(ambientLight);
+          scene.add(sphereLightMesh);
+          scene.add(axisHelper);          
+          scene.add(inspectedCamera);
+          scene.add(cameraHelper);         
+          scene.add(spotLight);
+          scene.add(spotLightHelper);
+          //scene.add(directionalLight);
+
+
+          $('body').append(renderer.domElement)
+              
+          var step = 0;
+          
+          var controls = new function () {
+
+              this.showSpotLightHelper = true;
+              this.showAxisHelper = true;
+              this.inspectedCamera = false;  
+
+              //this.intensity = 1;
+              //this.angle = 0.75;
+              //this.distance = 30;
+              //this.exponent = 30;
+
+              this.ambientColor = ambiColor;
+
+              this.generateTree = function(){ addTree2Scene() };
+          }
+
+          var gui = new dat.GUI();
+
+          var axisControls = gui.add(controls , 'showAxisHelper');
+          var cameraControl = gui.add(controls , 'inspectedCamera');
+          gui.add(controls , 'generateTree');
+
+          // GUI for light 
+          var spotLightHelper = gui.add(controls , 'showSpotLightHelper').onChange(function (value){
+              spotLightHelper.visible = value;
+          });
+
+          gui.addColor(controls, 'ambientColor').onChange(function (e) {
+            ambientLight.color = new THREE.Color(e);
+          });
+
+          /*
+          gui.add(controls, 'intensity', 0, 5).onChange(function (e) {
+              spotLight.intensity = e;
+          });
+
+           gui.add(controls, 'angle', 0, Math.PI / 2).onChange(function (e) {
+              spotLight.angle = e;
+          });
+
+          gui.add(controls, 'distance', 0, 200).onChange(function (e) {
+            spotLight.distance = e;
+          });
+
+          gui.add(controls, 'exponent', 0, 50).onChange(function (e) {
+            spotLight.exponent = e;
+          });
+          /***/
+
+
+          axisControls.onChange(function (value) {
+           axisHelper.visible = value;
+          });
+
+          var renderCamera = camera;         
+          cameraControl.onChange(function (value){
+            renderCamera = value ? inspectedCamera : camera;
+          });
+
+          function animation(){
+            
+            trackballControls.update();
+            cameraHelper.update();
+
+            //var earthPos = generatePositionOnCirc(1);
+            //earth.rotation.y += 0.02;
+            //earth.position.set(earthPos.x , 0 , earthPos.z);
+
+            // render using requestAnimationFrame
+            requestAnimationFrame(animation);
+            renderer.render(scene, camera);
+          }
+
+          function generateTree(){
+
+            var o = new THREE.Object3D();
+
+            var geometry_t = new THREE.CylinderGeometry(2,2,20,32)
+            var material_t = new THREE.MeshLambertMaterial( {color: 0x964B00} );
+            var tronco_t = new THREE.Mesh( geometry_t , material_t );
+            tronco_t.position.set(0,10,0);
+
+            var sphereGeometry_t = new THREE.SphereGeometry(8,20,32);
+            var sphereMaterial_t = new THREE.MeshLambertMaterial({color: 0x3CB371 });
+            var chioma_t = new THREE.Mesh(sphereGeometry_t ,sphereMaterial_t );
+            chioma_t.position.set(0,20,0);
+
+            addApple2Tree(chioma_t);
+
+            o.add(tronco_t)
+            o.add(chioma_t);
+
+            return o
+          }
+
+          function generateApple(){
+
+            var geometry_m = new THREE.SphereGeometry(0.5,20,20);
+            var material_m = new THREE.MeshLambertMaterial({color: 0xff0000})
+            var apple = new THREE.Mesh(geometry_m , material_m);
+
+            return apple
+          }
+
+          function generatePositionOnSphere(r){
+            
+            var angle1 = Math.random()*180;
+            var angle2 = Math.random()*360-180;
+
+            positionX = r * Math.sin(angle1) * Math.cos(angle2);
+            positionY = r * Math.cos(angle1);
+            positionZ = r * Math.sin(angle1) * Math.sin(angle2);
+
+            return {'x' : positionX , 'y' : positionY , 'z' : positionZ}
+          }
+
+          var angle = 0;
+          function generatePositionOnCirc(r){
+
+            var timer = new Date().getTime() * 0.0005;
+
+            positionX = Math.floor(Math.cos( timer ) * 70);
+            positionZ = Math.floor(Math.sin( timer ) * 70);
+
+            return {'x': positionX , 'z': positionZ}
+          }
+
+          function addApple2Tree(chioma){
+
+    
+            for(var i = 0 ; i < 200 ; i++){
+              var pos = generatePositionOnSphere(8);
+              var apple = generateApple();
+              apple.position.set(pos.x , pos.y , pos.z);
+
+              chioma.add(apple);
+            }
+          }
+
+          function addTree2Scene(){
+
+            var scaleFactorX = Math.ceil(Math.random() * 4 );
+            var scaleFactorY = Math.ceil(Math.random() * 4 );
+            var scaleFactorZ = Math.ceil(Math.random() * 4 );
+
+            var positionX = Math.ceil(Math.random() * 30);
+            var positionY = 0
+            var positionZ = Math.ceil(Math.random() * 30);
+
+            var tree = generateTree();
+
+            tree.position.set(positionX , 0 , positionZ);
+
+            scene.add(tree);
+          }
+
+          animation();
+
+    });
+    </script>
  </body>
 </html>
