@@ -225,7 +225,7 @@
             chioma_t.position.set(0,20,0);
             chioma_t.castShadow = true;
 
-            //addApple2Tree(chioma_t);
+            addApple2Tree(chioma_t);
 
             o.add(tronco_t)
             o.add(chioma_t);
@@ -238,7 +238,8 @@
             var geometry_m = new THREE.SphereGeometry(0.5,20,15);
             var material_m = new THREE.MeshLambertMaterial({color: 0xff0000})
             var apple = new THREE.Mesh(geometry_m , material_m);
-
+            apple.castShadow = true;
+            
             return apple
           }
 
