@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
  <head> 
-  <title>Homework 4 - Lamp in Three.js</title> 
+  <title>Homework 4 - Pixar Lamp in Three.js</title> 
   <style>
     body{
       margin: 0;
@@ -48,7 +48,7 @@
 
           //Variables's lamp
           var r1 = 5;
-          var r2 = 10;
+          var r2 = 7;
           var r3 = 15; 
           var heightCono = 10;
 
@@ -84,14 +84,15 @@
 
           var base = generateCylinder(heightBase , 0 , rTopBase , rBottomBase , options);
           base.add(j1);
-          base.rotation.x = angleRotate;
+          //base.rotation.x = angleRotate;
 
           //create lamp
           var lamp = createTopLamp(r1,r2,r3,heightCono,segmentO,radius);
+          j2.attach.add(lamp);
 
           scene.add(camera);
-          //scene.add(base);
-          scene.add(lamp);
+          scene.add(base);
+          //scene.add(lamp);
           scene.add(axisHelper);
 
           var controls = new function() {
@@ -99,6 +100,8 @@
             this.joint1_z = alfaFrom;
             this.joint2_x = alfaFrom;
             this.joint2_z = alfaFrom;
+            this.lamp_x = alfaFrom;
+            this.lamp_y = alfaFrom;
           }
 
           // PERCHE SE METTE LA ROTAZIONE SU X Y Z NON VA ? 
@@ -114,6 +117,12 @@
           });
           gui.add(controls , 'joint2_z',0,Math.PI).onChange(function (e){
             j2.rotation.y = e;
+          });
+          gui.add(controls , 'lamp_x',0,Math.PI).onChange(function (e){
+            lamp.pivot.rotation.x = e;
+          });
+          gui.add(controls , 'lamp_y',0,Math.PI).onChange(function (e){
+            lamp.rotation.y = e;
           });
 
           $('body').append(renderer.domElement)
@@ -187,7 +196,8 @@
 
           function createMesh(geometry , meshType , options){
 
-            var meshMaterial = new THREE.MeshBasicMaterial({specular: 0xffffff, color: 0x3399ff, shininess: 100, metal: true});
+            var meshMaterial = new THREE.MeshPhongMaterial({specular: 0xffffff, color: 0x3399ff, shininess: 100, metal: true});
+            meshMaterial.DoubleSide = true;
             var mesh = new THREE.Mesh(geometry , meshMaterial);
 
             return mesh;
@@ -199,8 +209,8 @@
             //var cono = generateCylinder(10 , 7 , 3 , 2 , {color: 0xf342de});
             //var cono2 =  generateCylinder(15 , 19.5 , 5 , 5 , {color: 0xf342de});
             
-            var conoGeom = new THREE.CylinderGeometry(r2-3,r1,height,segmentO);
-            var conoGeom2 = new THREE.CylinderGeometry(r3,r2,height+3,segmentO);
+            var conoGeom = new THREE.CylinderGeometry(r2,r1,height,segmentO);
+            var sphereGeom = new THREE.SphereGeometry(r3,20,20,6,6.3,1.4,1.5);
             var pivot = generatePivot(radius,radius);
 
             
@@ -212,11 +222,11 @@
                                                                bevelSize: 0});
             */
             cono = createMesh(conoGeom , "phong" , {color: 0x3399ff});
-            cono2 = createMesh(conoGeom2 , "phong" , {color: 0x3399ff});
+            sphere = createMesh(sphereGeom , "phong" , {color: 0x3399ff});
             cono.position.set(0,(height+radius)/2,0);
-            cono2.position.set(0,(height+radius+3),0);
+            sphere.position.set(0,(height-1+r3),0);
 
-            pivot.add(cono2);
+            pivot.add(sphere);
             pivot.add(cono);
 
             var topLamp = new THREE.Object3D();
