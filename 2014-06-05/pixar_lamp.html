@@ -39,9 +39,12 @@
           var cameraZ = 30;
           var lookUpVector = new THREE.Vector3(0,1,0);
 
-          //Angle
-          var alfaFrom = Math.PI/6;
-          var alfaTo = 0;
+          //Pivot Angle
+          var alfaTo = Math.PI*2;
+          var betaTo = Math.PI/2;
+          var gammaTo = Math.PI/2;
+          var gamma2To = Math.PI*2;
+          var epslonTo = Math.PI/2;
 
           //Variables's arm
           var rTop = 2;
@@ -111,8 +114,10 @@
           */
 
           var cubeGeometry = new THREE.PlaneGeometry(500,500);
-          var meshMaterial = new THREE.MeshLambertMaterial({color: 0x3CB371});
-          var plane = new THREE.Mesh(cubeGeometry, meshMaterial);
+          //var meshMaterial = new THREE.MeshLambertMaterial({color: 0x3CB371});
+          //var plane = new THREE.Mesh(cubeGeometry, meshMaterial);
+          phongOptions['color'] = '0x3CB371';
+          var plane = createMesh(cubeGeometry , "lambert" , {color: 0x3CB371})
           plane.position.set(0,0,0);
           plane.rotation.x=-0.5*Math.PI;
 
@@ -174,33 +179,29 @@
           scene.add(b);
 
           var controls = new function() {
-            this.joint1_x = alfaFrom;
-            this.joint1_z = alfaFrom;
-            this.joint2_x = alfaFrom;
-            this.joint2_z = alfaFrom;
-            this.lamp_x = 2.28;
-            this.lamp_y = alfaFrom;
+            this.pivot_alfa = 0;
+            this.pivot_beta = 0;
+            this.pivot_gamma = 0;
+            this.pivot_gamma2 = 0;
+            this.pivot_epslon = 0;
           }
 
           // PERCHE SE METTE LA ROTAZIONE SU X Y Z NON VA ? 
           var gui = new dat.GUI();
-          gui.add(controls, 'joint1_x',0,Math.PI).onChange(function (e){
-            j1.pivot.rotation.x = e;
-          });
-          gui.add(controls, 'joint1_z',0,Math.PI).onChange(function (e){
+          gui.add(controls, 'pivot_alfa',0,alfaTo).onChange(function (e){
             j1.rotation.y = e;
           });
-          gui.add(controls , 'joint2_x',0,Math.PI).onChange(function (e){
+          gui.add(controls, 'pivot_beta',0,betaTo).onChange(function (e){
+            j1.pivot.rotation.x = e;
+          });
+          gui.add(controls , 'pivot_gamma',0,gammaTo).onChange(function (e){
             j2.pivot.rotation.x = e;
           });
-          gui.add(controls , 'joint2_z',0,Math.PI).onChange(function (e){
+          gui.add(controls , 'pivot_gamma2',0,gamma2To).onChange(function (e){
             j2.rotation.y = e;
           });
-          gui.add(controls , 'lamp_x',0,Math.PI).onChange(function (e){
+          gui.add(controls , 'pivot_epslon',0,epslonTo).onChange(function (e){
             lamp.pivot.rotation.x = e;
-          });
-          gui.add(controls , 'lamp_y',0,Math.PI).onChange(function (e){
-            lamp.rotation.y = e;
           });
 
           $('body').append(renderer.domElement)
@@ -280,14 +281,14 @@
             switch(meshType){
               case "phong":
               meshMaterial = new THREE.MeshPhongMaterial(options);
-              meshMaterial.doubleSide = true;
                 break;
               case "basic":
                 break;
               case "lambert":
+                meshMaterial = new THREE.MeshLambertMaterial(options);
                 break;
             }
-
+            meshMaterial.doubleSide = true;
             var mesh = new THREE.Mesh(geometry , meshMaterial);
 
             return mesh;
@@ -323,7 +324,7 @@
 
             //Add light to lamp
             var fooTarget = generateSphere(r1-0.5,segmentO,segmentO,{color:0xffffff});
-            fooTarget.position.y = 100;
+            fooTarget.position.y = 30;
             var pointColor = "#FFD700";
             /*var spotLight = new THREE.SpotLight(pointColor);
             spotLight.target = fooTarget;
