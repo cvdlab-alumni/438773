@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+ <head> 
+  <title>Example 1 - Basic skeleton</title> 
+  <style>
+    body{
+      margin: 0;
+      overflow: hidden;
+    }
+  </style> 
+  </head> 
+  <body>
+    <!-- JavaScript libraries -->
+    <script src="assets/libs/three.min.js"></script> 
+    <script src="assets/libs/jquery.min.js"></script> 
+    <script src="assets/libs/Stats.min.js"></script>
+    <script src="assets/libs/dat.gui.min.js"></script>
+    <script src="assets/libs/TrackballControls.js"></script>
+    <script src="assets/libs/tween.min.js"></script>
+
+    <!-- Javascript code that runs our Three.js examples --> 
+    <script>
+      // once everything is loaded, we run our Three.js stuff.
+      $(  
+        function () {
+		
+      		var scene = new THREE.Scene()
+      		
+      		var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+          var inspectedCamera = new THREE.PerspectiveCamera(10, window.innerWidth / window.innerHeight, 10, 100);
+
+          var trackballControls = new THREE.TrackballControls(camera);
+
+      		renderer = new THREE.WebGLRenderer();
+          renderer.setClearColor(new THREE.Color(0xEEEEEE));
+          renderer.setSize(window.innerWidth, window.innerHeight);
+
+          var planeGeometry = new THREE.PlaneGeometry(60,60)
+          var planeMaterial = new THREE.MeshLambertMaterial({color: 0x2E8B57});
+          planeMaterial.side = THREE.DoubleSide;
+          var plane = new THREE.Mesh(planeGeometry,planeMaterial);
+      		
+          plane.rotation.x=-0.5*Math.PI;
+      	  plane.position.set(0,0,0);
+
+          //var albero = generateTree();
+          var mela = generateApple();
+          mela.position.set(0,20,0);
+
+         
+          // add subtle ambient lightinag
+          var ambiColor = "#0c0c0c";
+          var ambientLight = new THREE.AmbientLight(0x0c0c0c);
+
+          // add spotlight for the shadows
+          var directional = new THREE.DirectionalLight( 0xffffff );
+          directional.position.set(-40,60,-10);
+
+          scene.add(ambientLight);
+          scene.add(directional);
+      		scene.add(plane);
+      		scene.add(mela);
+      		
+      		camera.position.set(-60,20,30);
+          camera.up = new THREE.Vector3(0,1,0);
+          camera.lookAt(scene.position);
+
+          var axisHelper = new THREE.AxisHelper(3);
+          scene.add(axisHelper);
+      		
+          var cameraHelper = new THREE.CameraHelper(inspectedCamera);
+          //scene.add(inspectedCamera);
+          //scene.add(cameraHelper);
+
+          $('body').append(renderer.domElement)
+
+
+            var melaAfter = new TWEEN.Tween(mela.position)
+            .to({x:0,y:0,z:10} , 1000)
+            
+
+           var melaTween = new TWEEN.Tween(mela.position)
+            .to({x: 0, y: 1, z:0} , 2000)
+            .easing(TWEEN.Easing.Bounce.Out)
+            .chain(melaAfter)
+            .start();
+            
+
+          var step = 0;
+          
+          var controls = new function () {
+              this.X = 0;
+              this.Z = 0;
+              this.radius = 1;
+
+              this.lightPositionX = 0; 
+              this.lightPositionY = 0; 
+              this.lightPositionZ = 0; 
+
+              this.cameraViewX = 0;
+              this.cameraViewY = 0;              
+              this.cameraViewZ = 0;
+
+              this.showAxisHelper = true;
+              this.inspectedCamera = false;
+
+              this.ambientColor = ambiColor;
+
+              this.generateTree = function(){ addTree2Scene() };
+          }
+
+          var gui = new dat.GUI();
+          gui.add(controls, 'X',0,1);
+          gui.add(controls , 'Z',0,1);
+          var axisControls = gui.add(controls , 'showAxisHelper');
+          gui.add(controls , 'radius' , 0 , 20);
+          gui.add(controls , 'lightPositionX',0,100);
+          gui.add(controls , 'lightPositionY',0,100);
+          gui.add(controls , 'lightPositionZ',0,100);
+
+          var cameraControl = gui.add(controls , 'inspectedCamera');
+          gui.add(controls , 'cameraViewX',-100,100);
+          gui.add(controls , 'cameraViewY',-100,100);
+          gui.add(controls , 'cameraViewZ',-100,100);
+
+          gui.add(controls , 'generateTree');
+
+          gui.addColor(controls, 'ambientColor').onChange(function (e) {
+            ambientLight.color = new THREE.Color(e);
+          });
+
+          animation();
+
+
+
+          function animation(){
+            
+            trackballControls.update();
+            cameraHelper.update();
+            TWEEN.update();
+
+            //albero.position.x = (controls.X*60) - 30;
+            //albero.position.z = (controls.Z*60) - 30;
+            
+            scene.position.set(controls.cameraViewX , controls.cameraViewY , controls.cameraViewZ);
+
+            // render using requestAnimationFrame
+          	requestAnimationFrame(animation);
+          	renderer.render(scene, camera);
+          }
+
+          function generateTree(){
+
+            var o = new THREE.Object3D();
+
+            var geometry_t = new THREE.CylinderGeometry(2,2,20,32)
+            var material_t = new THREE.MeshLambertMaterial( {color: 0x964B00} );
+            var tronco_t = new THREE.Mesh( geometry_t , material_t );
+            tronco_t.position.set(0,10,0);
+
+            var sphereGeometry_t = new THREE.SphereGeometry(8,20,32);
+            var sphereMaterial_t = new THREE.MeshLambertMaterial({color: 0x3CB371 });
+            var chioma_t = new THREE.Mesh(sphereGeometry_t ,sphereMaterial_t );
+            chioma_t.position.set(0,20,0);
+
+            addApple2Tree(chioma_t);
+
+            o.add(tronco_t)
+            o.add(chioma_t);
+
+            return o
+          }
+
+          function generateApple(){
+
+            var geometry_m = new THREE.SphereGeometry(0.5,20,20);
+            var material_m = new THREE.MeshLambertMaterial({color: 0xff0000})
+            var apple = new THREE.Mesh(geometry_m , material_m);
+
+            return apple
+          }
+
+          function generatePosition(r){
+            
+            var angle1 = Math.random()*180;
+            var angle2 = Math.random()*360-180;
+
+            positionX = r * Math.sin(angle1) * Math.cos(angle2);
+            positionY = r * Math.cos(angle1);
+            positionZ = r * Math.sin(angle1) * Math.sin(angle2);
+
+            return {'x' : positionX , 'y' : positionY , 'z' : positionZ}
+          }
+
+          function addApple2Tree(chioma){
+
+    
+            for(var i = 0 ; i < 200 ; i++){
+              var pos = generatePosition(8);
+              var apple = generateApple();
+              apple.position.set(pos.x , pos.y , pos.z);
+
+              chioma.add(apple);
+            }
+          }
+
+          function addTree2Scene(){
+
+            var scaleFactorX = Math.ceil(Math.random() * 4 );
+            var scaleFactorY = Math.ceil(Math.random() * 4 );
+            var scaleFactorZ = Math.ceil(Math.random() * 4 );
+
+            var positionX = Math.ceil(Math.random() * 30);
+            var positionY = 0
+            var positionZ = Math.ceil(Math.random() * 30);
+
+            var tree = generateTree();
+
+            tree.position.set(positionX , 0 , positionZ);
+
+            scene.add(tree);
+          }
+    });
+    </script>  
+ </body>
+</html>
