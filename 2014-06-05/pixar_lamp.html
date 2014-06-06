@@ -17,6 +17,10 @@
     <script src="assets/libs/dat.gui.min.js"></script>
     <script src="assets/libs/TrackballControls.js"></script>
 
+    <script type="text/javascript" src="assets/fonts/helvetiker_regular.typeface.js"></script> 
+    <script type="text/javascript" src="assets/fonts/helvetiker_bold.typeface.js"></script> 
+    <script type="text/javascript" src="assets/fonts/bitstream_vera_sans_mono_roman.typeface.js"></script> 
+
     <!-- Javascript code that runs our Three.js examples --> 
     <script>
       // once everything is loaded, we run our Three.js stuff.
@@ -89,6 +93,7 @@
 
           var pointColor = "#ff5808";
           var directionalLight = new THREE.DirectionalLight( 0xffffff );
+          directionalLight.intensity = 0.5;
           directionalLight.position.set(-40,60,-10);
 
           /*
@@ -105,11 +110,11 @@
           directionalLight.shadowMapWidth = 1024;
           */
 
-          var cubeGeometry = new THREE.BoxGeometry(500,3,500);
+          var cubeGeometry = new THREE.PlaneGeometry(500,500);
           var meshMaterial = new THREE.MeshLambertMaterial({color: 0x3CB371});
-          var cube = new THREE.Mesh(cubeGeometry, meshMaterial);
-          cube.position.set(0,0,0);
-          cube.receiveShadow = true;
+          var plane = new THREE.Mesh(cubeGeometry, meshMaterial);
+          plane.position.set(0,0,0);
+          plane.rotation.x=-0.5*Math.PI;
 
           var options = {color: 0x04FE32}
           var j1 = createJoint(heightArm , radius);
@@ -123,19 +128,50 @@
 
           var base = generateCylinder(heightBase , 0 , rTopBase , rBottomBase , phongOptions , "phong");
           base.add(j1);
-          base.position.y = 2;
-          //base.rotation.x = angleRotate;
+          base.position.set(0,2,150);
 
           //create lamp
           var lamp = createTopLamp(r1,r2,r3,heightCono,segmentO,radius);
           j2.attach.add(lamp);
 
+          var options = {
+            size: 85,
+            height: 22,
+            bevelThickness: 1.3,
+            bevelSize: 1.65,
+            bevelSegments: 15,
+            bevelEnabled: true,
+            curveSegments: 20,
+          };
+
+          c = createMesh(new THREE.TextGeometry("C", options), "phong");
+          v = createMesh(new THREE.TextGeometry("v", options) , "phong");
+          d = createMesh(new THREE.TextGeometry("d", options), "phong");
+          l = createMesh(new THREE.TextGeometry("l", options), "phong");
+          a = createMesh(new THREE.TextGeometry("a", options), "phong");
+          b = createMesh(new THREE.TextGeometry("b", options), "phong");
+
+          c.position.set(-150,2,0);
+          v.position.set(-60,2,0);
+          d.position.set(0,2,0);
+          l.position.set(70,2,0);
+          a.position.set(100,2,0);
+          b.position.set(170,2,0);
+
+
           scene.add(camera);
           scene.add(base);
           //scene.add(lamp);
           scene.add(axisHelper);
-          scene.add(cube);
+          scene.add(plane);
           scene.add(directionalLight);
+
+          scene.add(c);
+          scene.add(v);
+          scene.add(d);
+          scene.add(l);
+          scene.add(a);
+          scene.add(b);
 
           var controls = new function() {
             this.joint1_x = alfaFrom;
@@ -289,12 +325,12 @@
             var fooTarget = generateSphere(r1-0.5,segmentO,segmentO,{color:0xffffff});
             fooTarget.position.y = 100;
             var pointColor = "#FFD700";
-            var spotLight = new THREE.SpotLight(pointColor);
+            /*var spotLight = new THREE.SpotLight(pointColor);
             spotLight.target = fooTarget;
             spotLight.distance = 200;
             spotLight.angle = 0.75;
             spotLight.exponent = 1;
-            spotLight.intensity = 40;
+            spotLight.intensity = 40;*/
 
             /*
             spotLight.castShadow = true;
@@ -306,6 +342,16 @@
             spotLight.shadowMapHeight = 256;
             */
 
+            var spotLight = new THREE.SpotLight(0xffffff);
+            spotLight.intensity = 5;
+            spotLight.angle = Math.PI/6;
+            spotLight.target = fooTarget;
+            spotLight.castShadow = true;
+            //spotLight.shadowCameraVisible = true;
+            //spotLight.shadowCameraNear = Math.abs(cube.position.x - firstOrientablePin.position.x) + 5;
+            //spotLight.shadowMapWidth = 1024;
+            //spotLight.shadowMapHeight = 1024;
+            
             bulb.position.y = 4;
             bulb.add(spotLight);
             bulb.add(fooTarget);
