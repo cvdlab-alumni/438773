@@ -1,2 +1,2 @@
-Testing Readme
+Grafica Computazionale
 ======
