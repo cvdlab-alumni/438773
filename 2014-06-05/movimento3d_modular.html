@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+ <head> 
+  <title>Homework 4 - Lamp in Three.js</title> 
+  <style>
+    body{
+      margin: 0;
+      overflow: hidden;
+    }
+  </style> 
+  </head> 
+  <body>
+    <!-- JavaScript libraries -->
+    <script src="assets/libs/three.min.js"></script> 
+    <script src="assets/libs/jquery.min.js"></script> 
+    <script src="assets/libs/Stats.min.js"></script>
+    <script src="assets/libs/dat.gui.min.js"></script>
+    <script src="assets/libs/TrackballControls.js"></script>
+
+    <!-- Javascript code that runs our Three.js examples --> 
+    <script>
+      // once everything is loaded, we run our Three.js stuff.
+      $(  
+
+        function () {
+		      
+          /////////////////////////////
+          // Configurations Variables
+          // STANLEY
+          /////////////////////////////
+
+          var alfaFrom = Math.PI/6;
+          var alfaTo = 0;
+
+          //Variables's arm
+          var rTop = 2;
+          var rBottom = 2;
+          var heightArm = 20;
+          var segmentO = 20;
+
+          //Variables's base
+          var rTopBase = 15;
+          var rBottomBase = 15;
+          var heightBase = 2;
+
+          //Variables's pivot
+          var radius = 2;
+
+          //Variables's lamp
+          var r1 = 5;
+          var r2 = 10;
+          var r3 = 15; 
+          var heightCono = 10;
+
+          var angleRotate = Math.PI/2;
+
+          /////////////////////////////
+          /////////////////////////////
+
+      		var scene = new THREE.Scene()
+      		
+      		var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+          camera.position.set(-60,20,30);
+          camera.up = new THREE.Vector3(0,1,0);
+          camera.lookAt(scene.position);
+
+          var inspectedCamera = new THREE.PerspectiveCamera(10, window.innerWidth / window.innerHeight, 10, 1);
+          var trackballControls = new THREE.TrackballControls(camera);
+          var axisHelper = new THREE.AxisHelper(3);
+
+      		var renderer = new THREE.WebGLRenderer();
+          renderer.setClearColor(new THREE.Color(0xEEEEEE));
+          renderer.setSize(window.innerWidth, window.innerHeight);
+
+          var options = {color: 0x04FE32}
+          var j1 = createJoint(heightArm , radius);
+          var j2 = createJoint(heightArm , radius);
+          var pivotTop = generatePivot(radius,2);
+
+          j1.attach.add(j2);
+          j2.attach.add(pivotTop);
+          //positioning j1 on base
+          j1.position.y = 1;
+
+          var base = generateCylinder(heightBase , 0 , rTopBase , rBottomBase , options);
+          base.add(j1);
+          base.rotation.x = angleRotate;
+
+          //create lamp
+          var lamp = createTopLamp(r1,r2,r3,heightCono,segmentO,radius);
+
+          scene.add(camera);
+          //scene.add(base);
+          scene.add(lamp);
+          scene.add(axisHelper);
+
+          var controls = new function() {
+            this.joint1_x = alfaFrom;
+            this.joint1_z = alfaFrom;
+            this.joint2_x = alfaFrom;
+            this.joint2_z = alfaFrom;
+          }
+
+          // PERCHE SE METTE LA ROTAZIONE SU X Y Z NON VA ? 
+          var gui = new dat.GUI();
+          gui.add(controls, 'joint1_x',0,Math.PI).onChange(function (e){
+            j1.pivot.rotation.x = e;
+          });
+          gui.add(controls, 'joint1_z',0,Math.PI).onChange(function (e){
+            j1.rotation.y = e;
+          });
+          gui.add(controls , 'joint2_x',0,Math.PI).onChange(function (e){
+            j2.pivot.rotation.x = e;
+          });
+          gui.add(controls , 'joint2_z',0,Math.PI).onChange(function (e){
+            j2.rotation.y = e;
+          });
+
+          $('body').append(renderer.domElement)
+          
+          animation();
+
+          function animation(){
+
+            trackballControls.update();
+            requestAnimationFrame(animation);
+            renderer.render(scene, camera);
+          }
+
+          function generateCylinder(height , trasl , rTop , rBottom , options){
+            var planeGeometry = new THREE.CylinderGeometry(rBottom,rTop,height,segmentO);
+            var planeMaterial = new THREE.MeshBasicMaterial(options);
+            var cylinder = new THREE.Mesh(planeGeometry,planeMaterial);
+            
+            cylinder.position.set(0,trasl,0);
+            return cylinder;
+          }
+
+          function generateSphere(radius ,vertical , horizontal){
+            var geometry_m = new THREE.SphereGeometry(radius,vertical,horizontal);
+            var material_m = new THREE.MeshBasicMaterial({color: 0xff0000})
+            var sphere = new THREE.Mesh(geometry_m , material_m);
+              
+            return sphere
+          }
+
+          function generatePivot(radius , transl){
+            var pin = generateSphere(radius,20,20);
+            pin.position.set(0,transl,0);
+
+            return pin;
+          }
+
+          function createJoint(height , radius){
+
+            var options = {
+                            color: 0x2E8B57
+                          };
+
+            var joint = new THREE.Object3D();
+
+            var cylinder = generateCylinder(heightArm , (heightArm/2)+radius , rTop , rBottom , options);
+            var pivot = generatePivot(radius , 2);
+            pivot.add(cylinder);
+
+            var attach = new THREE.Object3D();
+            attach.position.set(0,(heightArm/2),0);
+            cylinder.add(attach);
+
+            joint.pivot = pivot;
+            joint.arm = cylinder;
+            joint.attach = attach;
+
+            joint.add(pivot);
+
+            return joint;
+          }
+
+          function radialWave(u , v){
+
+             var r = 2;
+             var x = Math.sin(u * 2 * Math.PI) * r;
+             var y = 3
+             var z = Math.cos(v * 2 * Math.PI) * r;
+             return new THREE.Vector3(x, y, z);
+          }
+
+          function createMesh(geometry , meshType , options){
+
+            var meshMaterial = new THREE.MeshBasicMaterial({specular: 0xffffff, color: 0x3399ff, shininess: 100, metal: true});
+            var mesh = new THREE.Mesh(geometry , meshMaterial);
+
+            return mesh;
+          }
+
+          function createTopLamp(r1,r2,r3,height,segmentO,radius){
+
+            // TODO ADD LAMP AND SPOTLIGHT
+            //var cono = generateCylinder(10 , 7 , 3 , 2 , {color: 0xf342de});
+            //var cono2 =  generateCylinder(15 , 19.5 , 5 , 5 , {color: 0xf342de});
+            
+            var conoGeom = new THREE.CylinderGeometry(r2-3,r1,height,segmentO);
+            var conoGeom2 = new THREE.CylinderGeometry(r3,r2,height+3,segmentO);
+            var pivot = generatePivot(radius,radius);
+
+            
+            /*var extrudeGeometryCono =  new THREE.ExtrudeGeometry(conoGeom , { amount: 2 , 
+                                                               bevelThickness: 0,
+                                                               bevelSize: 0});
+            var extrudeGeometryCono2 =  new THREE.ExtrudeGeometry(conoGeom2 , { amount: 2 , 
+                                                               bevelThickness: 0,
+                                                               bevelSize: 0});
+            */
+            cono = createMesh(conoGeom , "phong" , {color: 0x3399ff});
+            cono2 = createMesh(conoGeom2 , "phong" , {color: 0x3399ff});
+            cono.position.set(0,(height+radius)/2,0);
+            cono2.position.set(0,(height+radius+3),0);
+
+            pivot.add(cono2);
+            pivot.add(cono);
+
+            var topLamp = new THREE.Object3D();
+            topLamp.pivot = pivot;
+            topLamp.add(pivot);
+
+            return topLamp;
+          }
+
+          function addJoint2Arm(num_join){
+
+            if(num_join === 1){
+              return createArm();
+            }
+
+            var joint = createArm();
+            return joint.pivot.add(addJoint2Arm(--num_join));
+          }
+
+         });
+    </script>  
+ </body>
+</html>

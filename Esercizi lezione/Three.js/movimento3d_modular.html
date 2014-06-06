@@ -52,12 +52,12 @@
           
           arm = createArm();
           var j1 = createArm();
-          var j2 = createArm();
-          var j3 = createArm();
+          //var j2 = createArm();
+          //var j3 = createArm();
 
-          j2.pivot.add(j3);
-          j1.pivot.add(j2);
-          arm.pivot.add(j1);
+          //j2.pivot.add(j3);
+          //j1.pivot.add(j2);
+          //arm.pivot.add(j1);
           
 
 
@@ -86,7 +86,7 @@
             j1.pivot.rotation.y = e;
           });
           gui.add(controls , 'arm_pivot2_z',0,Math.PI).onChange(function (e){
-            j1.pivot.rotation.z = e;
+            j1.pivot.rotation.x = e;
           });
 
           $('body').append(renderer.domElement)
@@ -130,9 +130,9 @@
 
           function createArm(){
             var arm = new THREE.Object3D();
-            var obj1 = generateObject3D(12);
+            var obj1 = generateObject3D(14);
             //var pivot1 = generatePivot(2,obj1);
-            var pivot2 = generatePivot(24,obj1);
+            var pivot2 = generatePivot(2,obj1);
             //pivot1.add(pivot2);
 
             arm.pivot = pivot2;
