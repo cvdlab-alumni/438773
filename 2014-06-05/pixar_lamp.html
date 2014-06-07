@@ -34,9 +34,9 @@
           /////////////////////////////
 
           //Camera
-          var cameraX = -60;
-          var cameraY = 20;
-          var cameraZ = 30;
+          var cameraX = 0;
+          var cameraY = 200;
+          var cameraZ = 500;
           var lookUpVector = new THREE.Vector3(0,1,0);
 
           //Pivot Angle
@@ -76,6 +76,14 @@
 
           var angleRotate = Math.PI/2;
 
+          // Light
+          var intensityDirectional = 0.7;
+          var intensityLamp = 2.5;
+          var castShadowDirectional = true;
+          var castShadowLamp = false;
+          var pointColorLightLamp = 0xADD8E6;
+          var pointColorDirectional = 0xffffff; 
+
           /////////////////////////////
           /////////////////////////////
 
@@ -93,33 +101,29 @@
       		var renderer = new THREE.WebGLRenderer();
           renderer.setClearColor(new THREE.Color(0xEEEEEE));
           renderer.setSize(window.innerWidth, window.innerHeight);
+          renderer.shadowMapEnabled = true;
 
-          var pointColor = "#ff5808";
-          var directionalLight = new THREE.DirectionalLight( 0xffffff );
-          directionalLight.intensity = 0.5;
-          directionalLight.position.set(-40,60,-10);
-
-          /*
-          directionalLight.castShadow = true;
-          directionalLight.shadowCameraNear = 2;
-          directionalLight.shadowCameraFar = 80;
-          directionalLight.shadowCameraLeft = -40;
-          directionalLight.shadowCameraRight = 40;
-          directionalLight.shadowCameraTop = 40;
-          directionalLight.shadowCameraBottom = -40;
-
-          directionalLight.intensity = 0.5;
+          var directionalLight = new THREE.DirectionalLight( pointColorDirectional );
+          directionalLight.intensity = intensityDirectional;
+          directionalLight.position.set(cameraX,cameraY,cameraZ);
+          directionalLight.castShadow = castShadowDirectional;
+          directionalLight.shadowCameraNear = 50;
+          directionalLight.shadowCameraFar = 800;
+          directionalLight.shadowCameraLeft = -500;
+          directionalLight.shadowCameraRight = 500;
+          directionalLight.shadowCameraTop = 500;
+          directionalLight.shadowCameraBottom = -500;
+          directionalLight.shadowCameraVisible = true;
           directionalLight.shadowMapHeight = 1024;
           directionalLight.shadowMapWidth = 1024;
-          */
 
+          phongOptions['color'] = '0x3CB371';          
           var cubeGeometry = new THREE.PlaneGeometry(500,500);
-          //var meshMaterial = new THREE.MeshLambertMaterial({color: 0x3CB371});
-          //var plane = new THREE.Mesh(cubeGeometry, meshMaterial);
-          phongOptions['color'] = '0x3CB371';
           var plane = createMesh(cubeGeometry , "lambert" , {color: 0x3CB371})
+          
           plane.position.set(0,0,0);
           plane.rotation.x=-0.5*Math.PI;
+          plane.receiveShadow = true;
 
           var options = {color: 0x04FE32}
           var j1 = createJoint(heightArm , radius);
@@ -134,10 +138,12 @@
           var base = generateCylinder(heightBase , 0 , rTopBase , rBottomBase , phongOptions , "phong");
           base.add(j1);
           base.position.set(0,2,150);
+          base.castShadow = true; 
 
           //create lamp
           var lamp = createTopLamp(r1,r2,r3,heightCono,segmentO,radius);
           j2.attach.add(lamp);
+
 
           var options = {
             size: 85,
@@ -150,11 +156,18 @@
           };
 
           c = createMesh(new THREE.TextGeometry("C", options), "phong");
-          v = createMesh(new THREE.TextGeometry("v", options) , "phong");
+          v = createMesh(new THREE.TextGeometry("v", options), "phong");
           d = createMesh(new THREE.TextGeometry("d", options), "phong");
           l = createMesh(new THREE.TextGeometry("l", options), "phong");
           a = createMesh(new THREE.TextGeometry("a", options), "phong");
           b = createMesh(new THREE.TextGeometry("b", options), "phong");
+
+          c.castShadow = true;
+          v.castShadow = true;
+          d.castShadow = true;
+          l.castShadow = true;
+          a.castShadow = true;
+          b.castShadow = true;
 
           c.position.set(-150,2,0);
           v.position.set(-60,2,0);
@@ -163,6 +176,7 @@
           a.position.set(100,2,0);
           b.position.set(170,2,0);
 
+          //lamp.light.target = v;
 
           scene.add(camera);
           scene.add(base);
@@ -186,7 +200,6 @@
             this.pivot_epslon = 0;
           }
 
-          // PERCHE SE METTE LA ROTAZIONE SU X Y Z NON VA ? 
           var gui = new dat.GUI();
           gui.add(controls, 'pivot_alfa',0,alfaTo).onChange(function (e){
             j1.rotation.y = e;
@@ -203,6 +216,9 @@
           gui.add(controls , 'pivot_epslon',0,epslonTo).onChange(function (e){
             lamp.pivot.rotation.x = e;
           });
+
+          j2.rotation.y = 3;
+          lamp.pivot.rotation.x = 1.5;
 
           $('body').append(renderer.domElement)
           
@@ -239,10 +255,6 @@
 
           function createJoint(height , radius){
 
-            var options = {
-                            color: 0x2E8B57
-                          };
-
             var joint = new THREE.Object3D();
 
             phongOptions['color'] = 0xa331e0;
@@ -256,6 +268,9 @@
             var attach = new THREE.Object3D();
             attach.position.set(0,(heightArm/2),0);
             cylinder.add(attach);
+
+            cylinder.castShadow = true;
+            pivot.castShadow = true;
 
             joint.pivot = pivot;
             joint.arm = cylinder;
@@ -296,8 +311,6 @@
 
           function createTopLamp(r1,r2,r3,height,segmentO,radius){
 
-            // TODO ADD LAMP AND SPOTLIGHT
-            
             var conoGeom = new THREE.CylinderGeometry(r2,r1,height,segmentO);
             var sphereGeom = new THREE.SphereGeometry(r3,20,20,6,6.3,1.4,1.5);
             var pivot = generatePivot(radius,radius);
@@ -315,6 +328,9 @@
             var sphere = createMesh(sphereGeom , "phong" ,phongOptions);
             var bulb = generateSphere(r1-0.5,segmentO,segmentO,{color:0xffffff});
 
+            cono.castShadow = true;
+            sphere.castShadow = true;
+
             cono.position.set(0,(height+radius)/2,0);
             sphere.position.set(0,(height-1+r3),0);
             sphere.material.side = THREE.DoubleSide;
@@ -324,34 +340,24 @@
 
             //Add light to lamp
             var fooTarget = generateSphere(r1-0.5,segmentO,segmentO,{color:0xffffff});
-            fooTarget.position.y = 30;
-            var pointColor = "#FFD700";
-            /*var spotLight = new THREE.SpotLight(pointColor);
-            spotLight.target = fooTarget;
-            spotLight.distance = 200;
-            spotLight.angle = 0.75;
-            spotLight.exponent = 1;
-            spotLight.intensity = 40;*/
+            fooTarget.position.y = 30;         
 
-            /*
-            spotLight.castShadow = true;
-            spotLight.shadowCameraNear = 2;
-            spotLight.shadowCameraFar = 50;
+            var spotLight = new THREE.SpotLight(pointColorLightLamp);
+            spotLight.intensity = intensityLamp;
+            spotLight.angle = Math.PI/3;
+            spotLight.target = fooTarget;
+            spotLight.castShadow = castShadowLamp;
+            spotLight.shadowCameraVisible = true;
+            spotLight.shadowCameraNear =30;
+            spotLight.shadowCameraFar = 500;
+            spotLight.shadowCameraLeft = -500;
+            spotLight.shadowCameraRight = 500;
+            spotLight.shadowCameraTop = 500;
+            spotLight.shadowCameraBottom = -500;
             spotLight.shadowCameraFov = 70;
             spotLight.shadowDarkness = 0.5;
             spotLight.shadowMapWidth = 256;
-            spotLight.shadowMapHeight = 256;
-            */
-
-            var spotLight = new THREE.SpotLight(0xffffff);
-            spotLight.intensity = 5;
-            spotLight.angle = Math.PI/6;
-            spotLight.target = fooTarget;
-            spotLight.castShadow = true;
-            //spotLight.shadowCameraVisible = true;
-            //spotLight.shadowCameraNear = Math.abs(cube.position.x - firstOrientablePin.position.x) + 5;
-            //spotLight.shadowMapWidth = 1024;
-            //spotLight.shadowMapHeight = 1024;
+            spotLight.shadowMapHeight = 256;        
             
             bulb.position.y = 4;
             bulb.add(spotLight);
