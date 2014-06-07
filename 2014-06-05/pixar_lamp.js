@@ -1,29 +1,4 @@
-<!DOCTYPE html>
-<html>
- <head> 
-  <title>Homework 4 - Pixar Lamp in Three.js</title> 
-  <style>
-    body{
-      margin: 0;
-      overflow: hidden;
-    }
-  </style> 
-  </head> 
-  <body>
-    <!-- JavaScript libraries -->
-    <script src="assets/libs/three.min.js"></script> 
-    <script src="assets/libs/jquery.min.js"></script> 
-    <script src="assets/libs/Stats.min.js"></script>
-    <script src="assets/libs/dat.gui.min.js"></script>
-    <script src="assets/libs/TrackballControls.js"></script>
-
-    <script type="text/javascript" src="assets/fonts/helvetiker_regular.typeface.js"></script> 
-    <script type="text/javascript" src="assets/fonts/helvetiker_bold.typeface.js"></script> 
-    <script type="text/javascript" src="assets/fonts/bitstream_vera_sans_mono_roman.typeface.js"></script> 
-
-    <!-- Javascript code that runs our Three.js examples --> 
-    <script>
-      // once everything is loaded, we run our Three.js stuff.
+  // once everything is loaded, we run our Three.js stuff.
       $(  
 
         function () {
@@ -118,7 +93,7 @@
           directionalLight.shadowMapWidth = 1024;
 
           phongOptions['color'] = '0x3CB371';          
-          var cubeGeometry = new THREE.PlaneGeometry(500,500);
+          var cubeGeometry = new THREE.PlaneGeometry(500,500,100,100);
           var plane = createMesh(cubeGeometry , "lambert" , {color: 0x3CB371})
           
           plane.position.set(0,0,0);
@@ -143,7 +118,6 @@
           //create lamp
           var lamp = createTopLamp(r1,r2,r3,heightCono,segmentO,radius);
           j2.attach.add(lamp);
-
 
           var options = {
             size: 85,
@@ -175,8 +149,6 @@
           l.position.set(70,2,0);
           a.position.set(100,2,0);
           b.position.set(170,2,0);
-
-          //lamp.light.target = v;
 
           scene.add(camera);
           scene.add(base);
@@ -218,7 +190,9 @@
           });
 
           j2.rotation.y = 3;
-          lamp.pivot.rotation.x = 1.5;
+          lamp.pivot.rotation.x = Math.PI/2;
+
+          //ciao();
 
           $('body').append(renderer.domElement)
           
@@ -315,14 +289,6 @@
             var sphereGeom = new THREE.SphereGeometry(r3,20,20,6,6.3,1.4,1.5);
             var pivot = generatePivot(radius,radius);
 
-            /*var extrudeGeometryCono =  new THREE.ExtrudeGeometry(conoGeom , { amount: 2 , 
-                                                               bevelThickness: 0,
-                                                               bevelSize: 0});
-            var extrudeGeometryCono2 =  new THREE.ExtrudeGeometry(conoGeom2 , { amount: 2 , 
-                                                               bevelThickness: 0,
-                                                               bevelSize: 0});
-            */
-
             phongOptions['color'] = 0x3399ff;
             var cono = createMesh(conoGeom , "phong" , phongOptions);
             var sphere = createMesh(sphereGeom , "phong" ,phongOptions);
@@ -384,6 +350,3 @@
           }
 
          });
-    </script>  
- </body>
-</html>
