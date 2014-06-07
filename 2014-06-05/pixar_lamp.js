@@ -189,21 +189,85 @@
             lamp.pivot.rotation.x = e;
           });
 
-          j2.rotation.y = 3;
-          lamp.pivot.rotation.x = Math.PI/2;
+          //j2.rotation.y = 3;
+          //lamp.pivot.rotation.x = Math.PI/2;
 
-          //ciao();
 
           $('body').append(renderer.domElement)
           
+
           animation();
+          //startAnimation(lamp.rotation , j2.rotation , base.position);
+
+          directionalLight.intensity = 0.7;
+
+          var animator = null;
+          function bouncingAnimator() {
+    
+              animator = new KF.KeyFrameAnimator;
+              animator.init({ 
+                interps:
+                  [
+                    { 
+                      keys:[0, .2, .4 , .6 , .8, 1], 
+                      values:[
+                        { x : 0 },
+                        { x : 14 },
+                        { x : 28 },
+                        { x : 42 },
+                        { x : 56 },
+                        { x : 70 },
+
+                      ],
+                      target: base.position
+                    },
+                    {
+                      keys:[0, .2, .4 , .6 , .8, 1], 
+                      values:[
+                        { y : 2 },
+                        { y : 100 },
+                        { y : 2 },
+                        { y : 100 },
+                        { y : 2  },
+                        { y : 100 },
+                      ],
+                      target: base.position
+                    },
+                    {
+                      keys:[0, .2, .4 , .6 , .8, 1], 
+                      values:[
+                        { z : 150 },
+                        { z : 120  },
+                        { z : 90 },
+                        { z : 60 },
+                        { z : 30 },
+                        { z : 0 },
+                      ],
+                      target: base.position
+                    },
+                  ],
+                loop: false,
+                easing: TWEEN.Easing.Bounce.Out,
+                duration: 3000
+              });
+
+          }
+
+          bouncingAnimator();
+          animator.start();
+
+
 
           function animation(){
 
+            KF.update();
+            TWEEN.update();
             trackballControls.update();
             requestAnimationFrame(animation);
             renderer.render(scene, camera);
           }
+
+
 
           function generateCylinder(height , trasl , rTop , rBottom , options , meshType){
             var planeGeometry = new THREE.CylinderGeometry(rBottom,rTop,height,segmentO);
@@ -272,6 +336,7 @@
               meshMaterial = new THREE.MeshPhongMaterial(options);
                 break;
               case "basic":
+                meshMaterial = new THREE.MeshBasicMaterial(options);
                 break;
               case "lambert":
                 meshMaterial = new THREE.MeshLambertMaterial(options);
