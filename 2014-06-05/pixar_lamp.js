@@ -88,7 +88,7 @@
           directionalLight.shadowCameraRight = 500;
           directionalLight.shadowCameraTop = 500;
           directionalLight.shadowCameraBottom = -500;
-          directionalLight.shadowCameraVisible = true;
+          directionalLight.shadowCameraVisible = false;
           directionalLight.shadowMapHeight = 1024;
           directionalLight.shadowMapWidth = 1024;
 
@@ -220,6 +220,7 @@
 
 
           $('body').append(renderer.domElement)
+          //document.getElementByClass('renderer').appendChild(renderer.domElement);
 
           animation();
 
@@ -227,11 +228,13 @@
 
             directionalLight.intensity = 0;
             startAnimation(lamp.rotation , j2.rotation)
-            setTimeout( function() { lightIntensity(directionalLight , 2000) } , 4500);
-            bouncingAnimator(base , l);
-            setTimeout( function() { animator.start() } , 6500);
-            //pausecomp(3000);
-            setTimeout( function() { animator3.start() } , 10000);
+            //setTimeout(function() { lightIntensity(directionalLight , 2000) } , 4500);
+            lightIntensity(directionalLight);
+            bouncingAnimator(base , l , j1.pivot , j2.pivot);
+            setTimeout( function() { jumpLamp.start(); 
+                                     contractArmDuringJump.start(); } , 6500);
+            setTimeout( function() { scalingLetter.start();
+                                     contractArmOnLetter.start(); } , 10000);
             setTimeout( function() { turnBackLamp(lamp.rotation) } , 12000)
           }
 
