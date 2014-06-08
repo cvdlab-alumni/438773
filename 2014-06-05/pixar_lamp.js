@@ -175,6 +175,8 @@
             this.lamp_z = 0;
 
             this.animate_Scene = function(){ animateScene() };
+
+            this.on_off = true;
           }
 
           var gui = new dat.GUI();
@@ -182,7 +184,6 @@
           var arm = gui.addFolder("Arms");
           //var debug = gui.addFolder("Debug");
           var lampG = gui.addFolder("Lamp");
-          //var animation = gui.addFolder("StartAnimation");
 
           arm.add(controls, 'pivot_alfa',0,alfaTo).onChange(function (e){
             j1.rotation.y = e;
@@ -206,6 +207,15 @@
           lampG.add(controls , 'lamp_z' , -250 , 250).onChange( function (e){
             base.position.z = e;
           });
+          lampG.add(controls , 'on_off').onChange(function (e){
+            if(e){
+              lamp.light.intensity = 2.5;             
+            }
+            else{
+              lamp.light.intensity = 0;
+            }
+          });
+
           gui.add(controls , 'animate_Scene');
 
 
