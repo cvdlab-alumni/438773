@@ -200,10 +200,10 @@
             lamp.pivot.rotation.x = e;
           });
 
-          lampG.add(controls , 'lamp_x' , 0 , 250).onChange( function (e){
+          lampG.add(controls , 'lamp_x' , -250 , 250).onChange( function (e){
             base.position.x = e;
           });
-          lampG.add(controls , 'lamp_z' , 0 , 250).onChange( function (e){
+          lampG.add(controls , 'lamp_z' , -250 , 250).onChange( function (e){
             base.position.z = e;
           });
           gui.add(controls , 'animate_Scene');
