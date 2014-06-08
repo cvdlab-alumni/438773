@@ -29,22 +29,114 @@ function lightIntensity(directionalLight){
 	directionalLight.intensity = 0.7;
 }
 
-function bouncingLamp(target){
+function turnBackLamp(target){
 
-	var bouncing = new TWEEN.Tween(target)
-		.to({ x: 70 , y: 2 , z: 0 })
-		.easing(TWEEN.Easing.Bounce.In)
-		.start();
 
+  var turnLeft = new TWEEN.Tween(target)
+    .to({ y: -alfaTarget*2/3} , time);
+
+  var turnBack = new TWEEN.Tween(target)
+    .to({ z: -alfaTarget*2.6 } , time)
+    .easing(TWEEN.Easing.Circular.Out)
+    .start();
 }
 
-var animator;
+var animator = null;
+var animator3 = null;
+function bouncingAnimator(base , l) {
+    
+  animator = new KF.KeyFrameAnimator;
+  animator.init({ 
+    interps:
+      [
+        { 
+          keys:[0, .2, .4 , .6 , .8, 1], 
+          values:[
+            { x : 0 },
+            { x : 14 },
+            { x : 28 },
+            { x : 42 },
+            { x : 56 },
+            { x : 80 },
 
+          ],
+          target: base.position
+        },
+        {
+          keys:[0, .2, .4 , .6 , .8, 1], 
+          values:[
+            { y : 2 },
+            { y : 100 },
+            { y : 2 },
+            { y : 100 },
+            { y : 2  },
+            { y : 90 },
+          ],
+          target: base.position
+        },
+        {
+          keys:[0, .2, .4 , .6 , .8, 1], 
+          values:[
+            { z : 150 },
+            { z : 120  },
+            { z : 90 },
+            { z : 60 },
+            { z : 30 },
+            { z : 16 },
+          ],
+          target: base.position
+        },
+      ],
+    loop: false,
+    easing: TWEEN.Easing.Bounce.Out,
+    duration: 3000
+  });
+
+  animator3 = new KF.KeyFrameAnimator;
+  animator3.init({ 
+    interps:
+      [
+        {
+          keys:[0, .1 , .2 , .3 , .4 , .5 , .6 , .7 , .8, 1], 
+          values:[
+            { y : 90 },
+            { y : 150 },
+            { y : 90 },
+            { y : 150 },
+            { y : 90 },
+            { y : 150 },
+            { y : 90 },
+            { y : 150 },
+            { y : 10  },
+            { y : 10 },
+          ],
+          target: base.position
+        },
+        {
+          keys:[0, .4 , .6 , .7 , .8, 1], 
+            values:[
+              { y :  1 },
+              { y :  1 },
+              { y :  1 },
+              { y :  1 },
+              { y :  .1 },
+              { y :  .1 },
+              { y : .1 },
+            ],
+            target: l.scale
+        }
+      ],
+    loop: false,
+    easing: TWEEN.Easing.Quadratic.In,
+    duration: 2000
+  });
+}
 
 function getAnimator(){
     
     return animator.start();
 }
+
 
 /*
 //define animations
@@ -104,7 +196,6 @@ function startAnimation(target1 , target2 , bouncingTarget){
 	turnLightLamp(target1 , target2);
 	//lightIntensity(directionalLight);
 	//bouncingLamp(bouncingTarget);
-	bouncingAnimator(bouncingTarget);
 }
 
 

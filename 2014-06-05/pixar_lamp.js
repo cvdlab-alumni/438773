@@ -170,93 +170,60 @@
             this.pivot_gamma = 0;
             this.pivot_gamma2 = 0;
             this.pivot_epslon = 0;
+
+            this.lamp_x = 0;
+            this.lamp_z = 0;
+
+            this.animate_Scene = function(){ animateScene() };
           }
 
           var gui = new dat.GUI();
-          gui.add(controls, 'pivot_alfa',0,alfaTo).onChange(function (e){
+
+          var arm = gui.addFolder("Arms");
+          //var debug = gui.addFolder("Debug");
+          var lampG = gui.addFolder("Lamp");
+          //var animation = gui.addFolder("StartAnimation");
+
+          arm.add(controls, 'pivot_alfa',0,alfaTo).onChange(function (e){
             j1.rotation.y = e;
           });
-          gui.add(controls, 'pivot_beta',0,betaTo).onChange(function (e){
+          arm.add(controls, 'pivot_beta',0,betaTo).onChange(function (e){
             j1.pivot.rotation.x = e;
           });
-          gui.add(controls , 'pivot_gamma',0,gammaTo).onChange(function (e){
+          arm.add(controls , 'pivot_gamma',0,gammaTo).onChange(function (e){
             j2.pivot.rotation.x = e;
           });
-          gui.add(controls , 'pivot_gamma2',0,gamma2To).onChange(function (e){
+          arm.add(controls , 'pivot_gamma2',0,gamma2To).onChange(function (e){
             j2.rotation.y = e;
           });
-          gui.add(controls , 'pivot_epslon',0,epslonTo).onChange(function (e){
+          arm.add(controls , 'pivot_epslon',0,epslonTo).onChange(function (e){
             lamp.pivot.rotation.x = e;
           });
 
-          //j2.rotation.y = 3;
-          //lamp.pivot.rotation.x = Math.PI/2;
+          lampG.add(controls , 'lamp_x' , 0 , 250).onChange( function (e){
+            base.position.x = e;
+          });
+          lampG.add(controls , 'lamp_z' , 0 , 250).onChange( function (e){
+            base.position.z = e;
+          });
+          gui.add(controls , 'animate_Scene');
 
 
           $('body').append(renderer.domElement)
-          
 
           animation();
-          //startAnimation(lamp.rotation , j2.rotation , base.position);
 
-          directionalLight.intensity = 0.7;
+          function animateScene(){
 
-          var animator = null;
-          function bouncingAnimator() {
-    
-              animator = new KF.KeyFrameAnimator;
-              animator.init({ 
-                interps:
-                  [
-                    { 
-                      keys:[0, .2, .4 , .6 , .8, 1], 
-                      values:[
-                        { x : 0 },
-                        { x : 14 },
-                        { x : 28 },
-                        { x : 42 },
-                        { x : 56 },
-                        { x : 70 },
-
-                      ],
-                      target: base.position
-                    },
-                    {
-                      keys:[0, .2, .4 , .6 , .8, 1], 
-                      values:[
-                        { y : 2 },
-                        { y : 100 },
-                        { y : 2 },
-                        { y : 100 },
-                        { y : 2  },
-                        { y : 100 },
-                      ],
-                      target: base.position
-                    },
-                    {
-                      keys:[0, .2, .4 , .6 , .8, 1], 
-                      values:[
-                        { z : 150 },
-                        { z : 120  },
-                        { z : 90 },
-                        { z : 60 },
-                        { z : 30 },
-                        { z : 0 },
-                      ],
-                      target: base.position
-                    },
-                  ],
-                loop: false,
-                easing: TWEEN.Easing.Bounce.Out,
-                duration: 3000
-              });
-
+            directionalLight.intensity = 0;
+            startAnimation(lamp.rotation , j2.rotation)
+            setTimeout( function() { lightIntensity(directionalLight , 2000) } , 4500);
+            bouncingAnimator(base , l);
+            setTimeout( function() { animator.start() } , 6500);
+            //pausecomp(3000);
+            setTimeout( function() { animator3.start() } , 10000);
+            setTimeout( function() { turnBackLamp(lamp.rotation) } , 12000)
           }
-
-          bouncingAnimator();
-          animator.start();
-
-
 
           function animation(){
 
@@ -266,8 +233,6 @@
             requestAnimationFrame(animation);
             renderer.render(scene, camera);
           }
-
-
 
           function generateCylinder(height , trasl , rTop , rBottom , options , meshType){
             var planeGeometry = new THREE.CylinderGeometry(rBottom,rTop,height,segmentO);
@@ -319,15 +284,6 @@
             return joint;
           }
 
-          function radialWave(u , v){
-
-             var r = 2;
-             var x = Math.sin(u * 2 * Math.PI) * r;
-             var y = 3
-             var z = Math.cos(v * 2 * Math.PI) * r;
-             return new THREE.Vector3(x, y, z);
-          }
-
           function createMesh(geometry , meshType , options){
 
             var meshMaterial;
@@ -370,7 +326,8 @@
             pivot.add(cono);
 
             //Add light to lamp
-            var fooTarget = generateSphere(r1-0.5,segmentO,segmentO,{color:0xffffff});
+            //var fooTarget = generateSphere(r1-0.5,segmentO,segmentO,{color:0xffffff});
+            var fooTarget = new THREE.Object3D();
             fooTarget.position.y = 30;         
 
             var spotLight = new THREE.SpotLight(pointColorLightLamp);
