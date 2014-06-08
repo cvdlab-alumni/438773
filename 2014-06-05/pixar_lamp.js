@@ -1,8 +1,8 @@
   // once everything is loaded, we run our Three.js stuff.
-      $(  
+  $(  
 
-        function () {
-		      
+    function () {
+
           /////////////////////////////
           // Configurations Variables
           // STANLEY
@@ -43,13 +43,13 @@
 
           //Phong Options
           var phongOptions = { 
-                               specular: 0xffffff, 
-                               color: 0x3399ff, 
-                               shininess: 100, 
-                               metal: true
-                             };
+           specular: 0xffffff, 
+           color: 0x3399ff, 
+           shininess: 100, 
+           metal: true
+         };
 
-          var angleRotate = Math.PI/2;
+         var angleRotate = Math.PI/2;
 
           // Light
           var intensityDirectional = 0.7;
@@ -62,9 +62,9 @@
           /////////////////////////////
           /////////////////////////////
 
-      		scene = new THREE.Scene()
-      		
-      		var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+          scene = new THREE.Scene()
+
+          var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
           camera.position.set(cameraX,cameraY,cameraZ);
           camera.up = lookUpVector;
           camera.lookAt(scene.position);
@@ -73,7 +73,7 @@
           var trackballControls = new THREE.TrackballControls(camera);
           var axisHelper = new THREE.AxisHelper(3);
 
-      		var renderer = new THREE.WebGLRenderer();
+          var renderer = new THREE.WebGLRenderer();
           renderer.setClearColor(new THREE.Color(0xEEEEEE));
           renderer.setSize(window.innerWidth, window.innerHeight);
           renderer.shadowMapEnabled = true;
@@ -93,7 +93,7 @@
           directionalLight.shadowMapWidth = 1024;
 
           phongOptions['color'] = '0x3CB371';          
-          var cubeGeometry = new THREE.PlaneGeometry(500,500,100,100);
+          var cubeGeometry = new THREE.PlaneGeometry(600,600,100,100);
           var plane = createMesh(cubeGeometry , "lambert" , {color: 0x3CB371})
           
           plane.position.set(0,0,0);
@@ -150,9 +150,13 @@
           a.position.set(100,2,0);
           b.position.set(170,2,0);
 
+          // Add tree to scene
+          var tree = generateTree();
+          tree.position.set(-190,2,0);
+
           scene.add(camera);
           scene.add(base);
-          //scene.add(lamp);
+          scene.add(tree);
           scene.add(axisHelper);
           scene.add(plane);
           scene.add(directionalLight);
@@ -228,14 +232,28 @@
 
             directionalLight.intensity = 0;
             startAnimation(lamp.rotation , j2.rotation)
-            //setTimeout(function() { lightIntensity(directionalLight , 2000) } , 4500);
             lightIntensity(directionalLight);
             bouncingAnimator(base , l , j1.pivot , j2.pivot);
+
+            /*var fooScene = new THREE.Object3D();
+            fooScene.add(tree.position);
+            fooScene.add(c.position);
+            fooScene.add(v.position);
+            fooScene.add(d.position);
+            fooScene.add(l.position);
+            fooScene.add(a.position);
+            fooScene.add(b.position);
+            fooScene.add(base.position);
+            fooScene.add(plane.position);
+
+            //shakeScene(fooScene , tree);*/
+
             setTimeout( function() { jumpLamp.start(); 
                                      contractArmDuringJump.start(); } , 6500);
             setTimeout( function() { scalingLetter.start();
                                      contractArmOnLetter.start(); } , 10000);
-            setTimeout( function() { turnBackLamp(lamp.rotation) } , 12000)
+            setTimeout( function() { applesGoDown(tree.apples) } , 12000);
+            setTimeout( function() { turnBackLamp(lamp.rotation) } , 13000);
           }
 
           function animation(){
@@ -275,7 +293,7 @@
 
             phongOptions['color'] = 0xa331e0;
             var cylinder = generateCylinder(heightArm , (heightArm/2)+radius , rTop , rBottom ,
-                           phongOptions , "phong");
+             phongOptions , "phong");
 
             phongOptions['color'] = 0xa314e0;
             var pivot = generatePivot(radius , 2 , phongOptions);
@@ -303,13 +321,13 @@
             switch(meshType){
               case "phong":
               meshMaterial = new THREE.MeshPhongMaterial(options);
-                break;
+              break;
               case "basic":
-                meshMaterial = new THREE.MeshBasicMaterial(options);
-                break;
+              meshMaterial = new THREE.MeshBasicMaterial(options);
+              break;
               case "lambert":
-                meshMaterial = new THREE.MeshLambertMaterial(options);
-                break;
+              meshMaterial = new THREE.MeshLambertMaterial(options);
+              break;
             }
             meshMaterial.doubleSide = true;
             var mesh = new THREE.Mesh(geometry , meshMaterial);
@@ -364,7 +382,7 @@
             bulb.add(spotLight);
             bulb.add(fooTarget);
             cono.add(bulb);
-        
+
             var topLamp = new THREE.Object3D();
             topLamp.pivot = pivot;
             topLamp.light = spotLight;
@@ -384,4 +402,4 @@
             return joint.pivot.add(addJoint2Arm(--num_join));
           }
 
-         });
+        });
