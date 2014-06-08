@@ -212,11 +212,84 @@ function bouncingAnimator(base , l , pivot_j1 , pivot_j2) {
   });
 }
 
+var jumpLetterAnimator = null;
+function jumpLetterAnimation(letters){
+
+jumpLetterAnimator = new KF.KeyFrameAnimator;
+  jumpLetterAnimator.init({ 
+    interps:
+    [
+      {
+        keys:[0, .2 , .4 , .6 , .8 , 1], 
+        values:[
+        { y : 0  },
+        { y : 70 },
+        { y : 0  },
+        { y : 22 },
+        { y : 7  },
+        { y : 0  }
+        ],
+        target: letters.c.position
+      },
+      {
+        keys:[0, .2 , .4 , .6 , .8 , 1], 
+        values:[
+        { y : 0  },
+        { y : 40 },
+        { y : 0  },
+        { y : 20 },
+        { y : 12 },
+        { y : 0  }
+        ],
+        target: letters.v.position
+      },
+      {
+        keys:[0, .2 , .4 , .6 , .8 , 1], 
+        values:[
+        { y : 0  },
+        { y : 50 },
+        { y : 0  },
+        { y : 30 },
+        { y : 5  },
+        { y : 0  }
+        ],
+        target: letters.d.position
+      },
+      {
+        keys:[0, .2 , .4 , .6 , .8 , 1], 
+        values:[
+        { y : 0  },
+        { y : 90 },
+        { y : 0  },
+        { y : 65 },
+        { y : 27  },
+        { y : 0  }
+        ],
+        target: letters.a.position
+      },
+      {
+        keys:[0, .2 , .4 , .6 , .8 , 1], 
+        values:[
+        { y : 0  },
+        { y : 70 },
+        { y : 0  },
+        { y : 15 },
+        { y : 5  },
+        { y : 0  }
+        ],
+        target: letters.b.position
+      }     
+    ],
+    loop: false,
+    easing: TWEEN.Easing.Circular.In,
+    duration: 700
+  });
+
+}
+
 function applesGoDown(apples){
 
-  
-
-  apples.forEach(function (apple){
+    apples.forEach(function (apple){
 
     var goDownTween = new TWEEN.Tween(apple.position)
                         .delay(400)
@@ -233,7 +306,7 @@ function applesGoDown(apples){
 
 var shakeKeyFrame = null;
 function shakeScene(scene , tree){
-  
+
   applesGoDown(tree.apples);
 }
 

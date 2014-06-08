@@ -8,6 +8,10 @@
           // STANLEY
           /////////////////////////////
 
+          //Plane
+          var x_plane = 600;
+          var y_plane = 600;
+
           //Camera
           var cameraX = 0;
           var cameraY = 200;
@@ -59,6 +63,17 @@
           var pointColorLightLamp = 0xADD8E6;
           var pointColorDirectional = 0xffffff; 
 
+          //Text
+           var optionsText = {
+            size: 85,
+            height: 22,
+            bevelThickness: 1.3,
+            bevelSize: 1.65,
+            bevelSegments: 15,
+            bevelEnabled: true,
+            curveSegments: 20,
+          };
+
           /////////////////////////////
           /////////////////////////////
 
@@ -93,7 +108,7 @@
           directionalLight.shadowMapWidth = 1024;
 
           phongOptions['color'] = '0x3CB371';          
-          var cubeGeometry = new THREE.PlaneGeometry(600,600,100,100);
+          var cubeGeometry = new THREE.PlaneGeometry(x_plane,y_plane,100,100);
           var plane = createMesh(cubeGeometry , "lambert" , {color: 0x3CB371})
           
           plane.position.set(0,0,0);
@@ -119,22 +134,13 @@
           var lamp = createTopLamp(r1,r2,r3,heightCono,segmentO,radius);
           j2.attach.add(lamp);
 
-          var options = {
-            size: 85,
-            height: 22,
-            bevelThickness: 1.3,
-            bevelSize: 1.65,
-            bevelSegments: 15,
-            bevelEnabled: true,
-            curveSegments: 20,
-          };
-
-          c = createMesh(new THREE.TextGeometry("C", options), "phong");
-          v = createMesh(new THREE.TextGeometry("v", options), "phong");
-          d = createMesh(new THREE.TextGeometry("d", options), "phong");
-          l = createMesh(new THREE.TextGeometry("l", options), "phong");
-          a = createMesh(new THREE.TextGeometry("a", options), "phong");
-          b = createMesh(new THREE.TextGeometry("b", options), "phong");
+         
+          c = createMesh(new THREE.TextGeometry("C", optionsText), "phong");
+          v = createMesh(new THREE.TextGeometry("v", optionsText), "phong");
+          d = createMesh(new THREE.TextGeometry("d", optionsText), "phong");
+          l = createMesh(new THREE.TextGeometry("l", optionsText), "phong");
+          a = createMesh(new THREE.TextGeometry("a", optionsText), "phong");
+          b = createMesh(new THREE.TextGeometry("b", optionsText), "phong");
 
           c.castShadow = true;
           v.castShadow = true;
@@ -235,25 +241,22 @@
             lightIntensity(directionalLight);
             bouncingAnimator(base , l , j1.pivot , j2.pivot);
 
-            /*var fooScene = new THREE.Object3D();
-            fooScene.add(tree.position);
-            fooScene.add(c.position);
-            fooScene.add(v.position);
-            fooScene.add(d.position);
-            fooScene.add(l.position);
-            fooScene.add(a.position);
-            fooScene.add(b.position);
-            fooScene.add(base.position);
-            fooScene.add(plane.position);
+            var letters = new THREE.Object3D();
+            letters.c = c;
+            letters.v = v;
+            letters.d = d;
+            letters.a = a;
+            letters.b = b;
 
-            //shakeScene(fooScene , tree);*/
+            jumpLetterAnimation(letters);
 
             setTimeout( function() { jumpLamp.start(); 
                                      contractArmDuringJump.start(); } , 6500);
             setTimeout( function() { scalingLetter.start();
                                      contractArmOnLetter.start(); } , 10000);
-            setTimeout( function() { applesGoDown(tree.apples) } , 12000);
-            setTimeout( function() { turnBackLamp(lamp.rotation) } , 13000);
+            setTimeout( function() { /*applesGoDown(tree.apples)*/
+                                     jumpLetterAnimator.start(); } , 11800);
+            setTimeout( function() { turnBackLamp(lamp.rotation) } , 12000);
           }
 
           function animation(){
@@ -329,7 +332,7 @@
               meshMaterial = new THREE.MeshLambertMaterial(options);
               break;
             }
-            meshMaterial.doubleSide = true;
+            meshMaterial.side = THREE.DoubleSide;
             var mesh = new THREE.Mesh(geometry , meshMaterial);
 
             return mesh;
@@ -357,7 +360,6 @@
             pivot.add(cono);
 
             //Add light to lamp
-            //var fooTarget = generateSphere(r1-0.5,segmentO,segmentO,{color:0xffffff});
             var fooTarget = new THREE.Object3D();
             fooTarget.position.y = 30;         
 
@@ -391,15 +393,4 @@
 
             return topLamp;
           }
-
-          function addJoint2Arm(num_join){
-
-            if(num_join === 1){
-              return createArm();
-            }
-
-            var joint = createArm();
-            return joint.pivot.add(addJoint2Arm(--num_join));
-          }
-
         });
