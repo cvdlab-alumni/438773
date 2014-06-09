@@ -60,7 +60,7 @@
           var intensityDirectional = 0.7;
           var intensityLamp = 2.5;
           var castShadowDirectional = true;
-          var castShadowLamp = false;
+          var castShadowLamp = true;
           var pointColorLightLamp = 0xADD8E6;
           var pointColorDirectional = 0xffffff; 
 
@@ -189,12 +189,14 @@
             this.animate_Scene = function(){ animateScene() };
 
             this.on_off = true;
+            this.debug_directional = false;
+            this.debug_lamp = false;
           }
 
           var gui = new dat.GUI();
 
           var arm = gui.addFolder("Arms");
-          //var debug = gui.addFolder("Debug");
+          var debug = gui.addFolder("Debug");
           var lampG = gui.addFolder("Lamp");
 
           arm.add(controls, 'pivot_alfa',0,alfaTo).onChange(function (e){
@@ -221,11 +223,21 @@
           });
           lampG.add(controls , 'on_off').onChange(function (e){
             if(e){
-              lamp.light.intensity = 2.5;             
+              lamp.light.intensity = 2.5;  
+              lamp.light.castShadow = true;
+           
             }
             else{
               lamp.light.intensity = 0;
+              lamp.light.castShadow = false;
             }
+          });
+
+          debug.add(controls , 'debug_directional').onChange( function (e){
+              directionalLight.shadowCameraVisible = e;
+          });
+          debug.add(controls , 'debug_lamp').onChange( function (e){
+              lamp.light.shadowCameraVisible = e;
           });
 
           gui.add(controls , 'animate_Scene');
@@ -370,7 +382,7 @@
             spotLight.angle = Math.PI/3;
             spotLight.target = fooTarget;
             spotLight.castShadow = castShadowLamp;
-            spotLight.shadowCameraVisible = true;
+            spotLight.shadowCameraVisible = false;
             spotLight.shadowCameraNear =30;
             spotLight.shadowCameraFar = 500;
             spotLight.shadowCameraLeft = -500;
