@@ -108,7 +108,7 @@
           directionalLight.shadowMapHeight = 1024;
           directionalLight.shadowMapWidth = 1024;
 
-          phongOptions['color'] = '0x3CB371';          
+          phongOptions['color'] = 0x3CB371;          
           var cubeGeometry = new THREE.PlaneGeometry(x_plane,y_plane,100,100);
           var plane = createMesh(cubeGeometry , "basic" , {color: planeBackground})
           
@@ -126,6 +126,7 @@
           //positioning j1 on base
           j1.position.y = 1;
 
+          phongOptions['color'] = 0x3399ff;
           var base = generateCylinder(heightBase , 0 , rTopBase , rBottomBase , phongOptions , "phong");
           base.add(j1);
           base.position.set(0,2,150);
@@ -295,11 +296,11 @@
 
             var joint = new THREE.Object3D();
 
-            phongOptions['color'] = 0xa331e0;
+            phongOptions['color'] = 0xF5F5F5;
             var cylinder = generateCylinder(heightArm , (heightArm/2)+radius , rTop , rBottom ,
              phongOptions , "phong");
 
-            phongOptions['color'] = 0xa314e0;
+            phongOptions['color'] = 0x3399ff;
             var pivot = generatePivot(radius , 2 , phongOptions);
             pivot.add(cylinder);
 
