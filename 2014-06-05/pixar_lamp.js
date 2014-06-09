@@ -11,6 +11,7 @@
           //Plane
           var x_plane = 600;
           var y_plane = 600;
+          var planeBackground = 0x87CEFA;
 
           //Camera
           var cameraX = 0;
@@ -89,7 +90,7 @@
           var axisHelper = new THREE.AxisHelper(3);
 
           var renderer = new THREE.WebGLRenderer();
-          renderer.setClearColor(new THREE.Color(0xEEEEEE));
+          renderer.setClearColor(new THREE.Color(planeBackground));
           renderer.setSize(window.innerWidth, window.innerHeight);
           renderer.shadowMapEnabled = true;
 
@@ -109,7 +110,7 @@
 
           phongOptions['color'] = '0x3CB371';          
           var cubeGeometry = new THREE.PlaneGeometry(x_plane,y_plane,100,100);
-          var plane = createMesh(cubeGeometry , "lambert" , {color: 0x3CB371})
+          var plane = createMesh(cubeGeometry , "basic" , {color: planeBackground})
           
           plane.position.set(0,0,0);
           plane.rotation.x=-0.5*Math.PI;
@@ -149,20 +150,20 @@
           a.castShadow = true;
           b.castShadow = true;
 
-          c.position.set(-150,2,0);
-          v.position.set(-60,2,0);
-          d.position.set(0,2,0);
-          l.position.set(70,2,0);
-          a.position.set(100,2,0);
-          b.position.set(170,2,0);
+          c.position.set(-150,3,0);
+          v.position.set(-60,3,0);
+          d.position.set(0,3,0);
+          l.position.set(70,3,0);
+          a.position.set(100,3,0);
+          b.position.set(170,3,0);
 
           // Add tree to scene
-          var tree = generateTree();
-          tree.position.set(-190,2,0);
+          //var tree = generateTree();
+          //tree.position.set(-190,2,0);
 
           scene.add(camera);
           scene.add(base);
-          scene.add(tree);
+          //scene.add(tree);
           scene.add(axisHelper);
           scene.add(plane);
           scene.add(directionalLight);
@@ -378,11 +379,16 @@
             spotLight.shadowCameraFov = 70;
             spotLight.shadowDarkness = 0.5;
             spotLight.shadowMapWidth = 256;
-            spotLight.shadowMapHeight = 256;        
+            spotLight.shadowMapHeight = 256;   
+
+            var spotLightBulb = new THREE.SpotLight(pointColorLightLamp);
+            spotLightBulb.intensity = intensityLamp;
+            spotLightBulb.angle = Math.PI/3;     
             
             bulb.position.y = 4;
             bulb.add(spotLight);
             bulb.add(fooTarget);
+            bulb.add(spotLightBulb);
             cono.add(bulb);
 
             var topLamp = new THREE.Object3D();
