@@ -151,12 +151,12 @@
           a.castShadow = true;
           b.castShadow = true;
 
-          c.position.set(-150,3,0);
-          v.position.set(-60,3,0);
-          d.position.set(0,3,0);
-          l.position.set(70,3,0);
-          a.position.set(100,3,0);
-          b.position.set(170,3,0);
+          c.position.set(-150,2,0);
+          v.position.set(-60,2,0);
+          d.position.set(0,2,0);
+          l.position.set(70,2,0);
+          a.position.set(100,2,0);
+          b.position.set(170,2,0);
 
           // Add tree to scene
           //var tree = generateTree();
@@ -384,6 +384,7 @@
 
             var spotLightBulb = new THREE.SpotLight(pointColorLightLamp);
             spotLightBulb.intensity = intensityLamp;
+            spotLightBulb.distance = 1;
             spotLightBulb.angle = Math.PI/3;     
             
             bulb.position.y = 4;
