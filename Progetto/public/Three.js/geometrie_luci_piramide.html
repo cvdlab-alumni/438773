@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+ <head> 
+  <title>Example 1 - Basic skeleton</title> 
+  <style>
+    body{
+      margin: 0;
+      overflow: hidden;
+    }
+  </style> 
+  </head> 
+  <body>
+    <!-- JavaScript libraries -->
+   <script src="assets/libs/three.min.js"></script> 
+    <script src="assets/libs/jquery.min.js"></script> 
+    <script src="assets/libs/Stats.min.js"></script>
+    <script src="assets/libs/dat.gui.min.js"></script>
+    <script src="assets/libs/TrackballControls.js"></script>
+    <!-- Javascript code that runs our Three.js examples --> 
+    <script>
+      // once everything is loaded, we run our Three.js stuff.
+      $(function () {
+		
+    		scene = new THREE.Scene()
+    		
+
+    		var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(-60,20,30);
+        camera.up = new THREE.Vector3(0,1,0);
+        camera.lookAt(scene.position);
+
+        var trackballControls = new THREE.TrackballControls(camera);
+
+    		renderer = new THREE.WebGLRenderer();
+        renderer.setClearColor(new THREE.Color(0xEEEEEE));
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMapEnabled = true;
+
+        var planeGeometry = new THREE.PlaneGeometry(60,60)
+        var planeMaterial = new THREE.MeshLambertMaterial({color: 0x2E8B57});
+        planeMaterial.side = THREE.DoubleSide;
+        var plane = new THREE.Mesh(planeGeometry,planeMaterial);
+        
+        plane.rotation.x=-0.5*Math.PI;
+        plane.position.set(0,0,0);
+        plane.receiveShadow = true;
+
+        var geometry_m = new THREE.BoxGeometry(10,10,10);
+        var material_m = new THREE.MeshLambertMaterial({color: 0xff0000})
+        var box = new THREE.Mesh(geometry_m , material_m);
+        box.position.set(0,10,0);
+        box.castShadow = true;
+
+        
+        var pointColor = "#ff5808";
+        var directionalLight = new THREE.DirectionalLight(pointColor);
+        directionalLight.position.set(0, 60, 0);
+        directionalLight.castShadow = true;
+        directionalLight.shadowCameraNear = 2;
+        directionalLight.shadowCameraFar = 80;
+        directionalLight.shadowCameraLeft = -40;
+        directionalLight.shadowCameraRight = 40;
+        directionalLight.shadowCameraTop = 40;
+        directionalLight.shadowCameraBottom = -40;
+
+        directionalLight.intensity = 0.5;
+        directionalLight.shadowMapHeight = 1024;
+        directionalLight.shadowMapWidth = 1024;
+
+        scene.add(directionalLight);
+        scene.add(box);
+        scene.add(plane); 
+
+        var controls = new function(){
+            this.intensity = 1;
+            this.distance = 60;
+            this.exponent = 10;
+            this.angle = 0.75;
+        };
+
+        var gui = new dat.GUI();
+       
+
+       gui.add(controls, 'intensity', 0, 5).onChange(function (e) {
+            directionalLight.intensity = e;
+        });
+
+        gui.add(controls, 'angle', 0, 5).onChange(function (e) {
+            directionalLight.angle = e;
+        });
+
+        gui.add(controls, 'distance', 0, 200).onChange(function (e) {
+          directionalLight.distance = e;
+        });
+
+        gui.add(controls, 'exponent', 0, 50).onChange(function (e) {
+          directionalLight.exponent = e;
+        });
+
+		    $('body').append(renderer.domElement)
+        
+        animation();
+        
+        function animation(){
+
+          trackballControls.update();
+
+          requestAnimationFrame(animation);
+        	renderer.render(scene, camera);
+        }
+
+        function createMesh(geom) {
+
+          // assign two materials
+          var meshMaterial = new THREE.MeshNormalMaterial();
+          meshMaterial.side = THREE.DoubleSide;
+          var wireFrameMat = new THREE.MeshLambertMaterial();
+          wireFrameMat.wireframe = true;
+
+          // create a multimaterial
+          var mesh = THREE.SceneUtils.createMultiMaterialObject(geom, [meshMaterial, wireFrameMat]);
+
+          return mesh;
+        }
+      });
+    </script>  
+ </body>
+</html>

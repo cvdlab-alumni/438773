@@ -1,0 +1,20 @@
+HOMEWORK 
+
+FORME DA METTERE
+- Perno 1
+- cylinder 1
+- Perno 2
+- cylinder 2
+- Perno 3
+- Sfera ( lampada )
+- Semisfera ( portalampada )
+- Oggetto 
+
+il primo cilindro ruota 
+
+alfa (perno 1) --> Z | [0,2*PI]
+beta (cilindro 1) --> X | [0, PI/2]
+gamma ( cilindro 2 )--> X | [0,PI/2] , Z | [0,2*PI] 
+epslon ( perno 2) --> X | [0,PI/2]
+
+switch --> interruttore
