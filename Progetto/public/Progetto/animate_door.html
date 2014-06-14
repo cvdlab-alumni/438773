@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+ <head> 
+  <title>Example 1 - Basic skeleton</title> 
+  <style>
+    body{
+      margin: 0;
+      overflow: hidden;
+    }
+  </style> 
+  </head> 
+  <body>
+    <!-- JavaScript libraries -->
+    <script src="assets/libs/three.min.js"></script> 
+    <script src="assets/libs/jquery.min.js"></script> 
+    <script src="assets/libs/Stats.min.js"></script>
+    <script src="assets/libs/dat.gui.min.js"></script>
+    <script src="assets/libs/TrackballControls.js"></script>
+    <script src="assets/libs/tween.min.js"></script>
+    <script src="door.js"></script>
+    <script src="assets/myScripts/helper.js"></script>
+
+
+
+
+    <!-- Javascript code that runs our Three.js examples --> 
+    <script>
+      // once everything is loaded, we run our Three.js stuff.
+      $(  
+        function () {
+		
+      		var scene = new THREE.Scene()
+      		
+      		var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+          var trackballControls = new THREE.TrackballControls(camera);
+
+      		var renderer = new THREE.WebGLRenderer();
+          renderer.setClearColor(new THREE.Color(0xEEEEEE));
+          renderer.setSize(window.innerWidth, window.innerHeight);
+
+          var projector = new THREE.Projector();
+          document.addEventListener('mousedown', onDocumentMouseDown, false);
+
+          // add subtle ambient lighting
+          var ambiColor = "#0c0c0c";
+          var ambientLight = new THREE.AmbientLight(0x0c0c0c);
+
+          // add spotlight for the shadows
+          var spotLight = new THREE.SpotLight( 0xffffff );
+          spotLight.position.set(-40,60,-10);
+
+          var door = new Door(12 , 30 , {color: 0xB87333});
+          door.createMesh();
+          door.createHinge();
+
+          var door_obj = loadObjModel("door_obj/puerta.obj" , "door_obj/tilewood.jpg");
+          door_obj.position.set(20,0,0)
+
+          scene.add(ambientLight);
+          scene.add(spotLight);
+          scene.add(door.hinge);
+          scene.add(door_obj);
+
+          //door.open();
+
+      		camera.position.set(-60,20,30);
+          camera.up = new THREE.Vector3(0,1,0);
+          camera.lookAt(scene.position);
+
+          var axisHelper = new THREE.AxisHelper(3);
+          scene.add(axisHelper);
+
+          $('body').append(renderer.domElement)
+              
+          var controls = new function () {
+          }
+
+          var gui = new dat.GUI();
+          
+          animation();
+
+          function animation(){
+            
+            trackballControls.update();
+            TWEEN.update();
+
+            // render using requestAnimationFrame
+          	requestAnimationFrame(animation);
+          	renderer.render(scene, camera);
+          }
+
+           function onDocumentMouseDown (event) {
+              event.preventDefault();
+
+              // map viewport coordinates in ([-1,1], [-1,1], 0.5)
+              var vector = new THREE.Vector3(( event.clientX / window.innerWidth ) * 2 - 1, -( event.clientY / window.innerHeight ) * 2 + 1, 0.5);
+              projector.unprojectVector(vector, camera);
+
+              var raycaster = new THREE.Raycaster(camera.position, 
+                vector.sub(camera.position).normalize());
+
+              intersects = raycaster.intersectObjects([door]);
+
+              if (intersects.length > 0) {
+                alert("ca troai")
+                intersects[0].object.open && intersects[0].object.open();
+              }
+              else
+              {
+                alert("Fffg")
+              }
+            }
+    });
+    </script>  
+ </body>
+</html>

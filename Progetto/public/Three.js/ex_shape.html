@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+ <head> 
+  <title>Example 1 - Basic skeleton</title> 
+  <style>
+    body{
+      margin: 0;
+      overflow: hidden;
+    }
+  </style> 
+  </head> 
+  <body>
+    <!-- JavaScript libraries -->
+    <script src="assets/libs/three.min.js"></script> 
+    <script src="assets/libs/jquery.min.js"></script> 
+    <script src="assets/libs/Stats.min.js"></script>
+    <script src="assets/libs/dat.gui.min.js"></script>
+    <script src="assets/libs/TrackballControls.js"></script>
+
+    <!-- Javascript code that runs our Three.js examples --> 
+    <script>
+      // once everything is loaded, we run our Three.js stuff.
+      $(  
+
+        function () {
+		
+          var w_p = 60;
+          var h_p = 30;
+          var a1 = Math.PI/6;
+          var rTop = 2;
+          var rBottom = 2;
+          var height = 20;
+          var segmentO = 20;
+
+      		var scene = new THREE.Scene()
+      		
+      		var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+          camera.position.set(-60,20,30);
+          camera.up = new THREE.Vector3(0,1,0);
+          camera.lookAt(scene.position);
+
+          var inspectedCamera = new THREE.PerspectiveCamera(10, window.innerWidth / window.innerHeight, 10, 1);
+
+          var trackballControls = new THREE.TrackballControls(camera);
+
+          var axisHelper = new THREE.AxisHelper(3);
+
+      		var renderer = new THREE.WebGLRenderer();
+          renderer.setClearColor(new THREE.Color(0xEEEEEE));
+          renderer.setSize(window.innerWidth, window.innerHeight);
+
+          var shape = new THREE.Shape();
+          shape.moveTo(9,6);
+
+          shape.lineTo(0,6);
+          shape.lineTo(0,0);
+          shape.lineTo(2,0);
+          shape.lineTo(2,4);
+          shape.lineTo(4,4);
+          shape.lineTo(4,0);
+          shape.lineTo(9,0);
+         
+          var windows = new THREE.Path();
+          windows.moveTo(6,2);
+          windows.lineTo(6,2);
+          windows.lineTo(8,2);
+          windows.lineTo(8,4);
+          windows.lineTo(6,4);
+          shape.holes.push(windows);
+
+          var shapeGeom = new THREE.ShapeGeometry(shape);
+          shapeMesh = createMesh(shapeGeom);
+
+          scene.add(shapeMesh);
+          scene.add(axisHelper);
+
+
+          var controls = new function(){
+            this.amount_extrude = 1;
+          }
+
+          
+
+          var gui = new dat.GUI();
+          gui.add(controls , 'amount_extrude' , 0 , 10).onChange(function (e){
+            var geometry = new THREE.ExtrudeGeometry(shape , { amount: e , 
+                                                               bevelThickness: 0,
+                                                               bevelSize: 0});
+            scene.remove(shapeMesh);
+            shapeMesh = createMesh(geometry);
+            scene.add(shapeMesh);
+          });
+
+          $('body').append(renderer.domElement)
+          
+          animation();
+
+          function animation(){
+
+            trackballControls.update();
+            requestAnimationFrame(animation);
+            renderer.render(scene, camera);
+          }
+
+           function createMesh(geom) {
+
+            //geom.applyMatrix(new THREE.Matrix4().makeTranslation(-20, 0, 0));
+
+            // assign two materials
+            var meshMaterial = new THREE.MeshNormalMaterial({transparent: false, opacity: 0.7});
+
+            meshMaterial.side = THREE.DoubleSide;
+            var wireFrameMat = new THREE.MeshBasicMaterial();
+            wireFrameMat.wireframe = true;
+
+            // create a multimaterial
+            var mesh = THREE.SceneUtils.createMultiMaterialObject(geom, [meshMaterial]);
+
+            return mesh;
+          }
+          
+
+         });
+    </script>  
+ </body>
+</html>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+ <head> 
+  <title>Example 1 - Basic skeleton</title> 
+  <style>
+    body{
+      margin: 0;
+      overflow: hidden;
+    }
+  </style> 
+  </head> 
+  <body>
+    <!-- JavaScript libraries -->
+    <script src="assets/libs/three.min.js"></script> 
+    <script src="assets/libs/jquery.min.js"></script> 
+    <script src="assets/libs/Stats.min.js"></script>
+    <script src="assets/libs/dat.gui.min.js"></script>
+    <script src="assets/libs/TrackballControls.js"></script>
+
+    <!-- Javascript code that runs our Three.js examples --> 
+    <script>
+      // once everything is loaded, we run our Three.js stuff.
+      $(  
+
+        function () {
+		
+          var w_p = 60;
+          var h_p = 30;
+          var a1 = Math.PI/6;
+          var rTop = 2;
+          var rBottom = 2;
+          var height = 20;
+          var segmentO = 20;
+
+      		var scene = new THREE.Scene()
+      		
+      		var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+          camera.position.set(-60,20,30);
+          camera.up = new THREE.Vector3(0,1,0);
+          camera.lookAt(scene.position);
+
+          var inspectedCamera = new THREE.PerspectiveCamera(10, window.innerWidth / window.innerHeight, 10, 1);
+
+          var trackballControls = new THREE.TrackballControls(camera);
+
+          var axisHelper = new THREE.AxisHelper(3);
+
+      		var renderer = new THREE.WebGLRenderer();
+          renderer.setClearColor(new THREE.Color(0xEEEEEE));
+          renderer.setSize(window.innerWidth, window.innerHeight);
+
+          
+          arm = createArm();
+          var j1 = createArm();
+          //var j2 = createArm();
+          //var j3 = createArm();
+
+          //j2.pivot.add(j3);
+          //j1.pivot.add(j2);
+          //arm.pivot.add(j1);
+          
+
+
+          scene.add(camera);
+          scene.add(arm);
+          scene.add(axisHelper);
+
+          var controls = new function() {
+            this.arm_pivot_y = a1;
+            this.arm_pivot_z = a1;
+            this.arm_pivot2_y = a1;
+            this.arm_pivot2_z = a1;
+
+            this.alfa_z_pin2 = a1;
+          }
+
+          // PERCHE SE METTE LA ROTAZIONE SU X Y Z NON VA ? 
+          var gui = new dat.GUI();
+          gui.add(controls, 'arm_pivot_y',0,Math.PI).onChange(function (e){
+            arm.pivot.rotation.y = e;
+          });
+          gui.add(controls, 'arm_pivot_z',0,Math.PI).onChange(function (e){
+            arm.pivot.rotation.z = e;
+          });
+          gui.add(controls , 'arm_pivot2_y',0,Math.PI).onChange(function (e){
+            j1.pivot.rotation.y = e;
+          });
+          gui.add(controls , 'arm_pivot2_z',0,Math.PI).onChange(function (e){
+            j1.pivot.rotation.x = e;
+          });
+
+          $('body').append(renderer.domElement)
+          
+          animation();
+
+          function animation(){
+
+            trackballControls.update();
+            requestAnimationFrame(animation);
+            renderer.render(scene, camera);
+          }
+
+          function generateObject3D(y_trasl){
+            var planeGeometry = new THREE.CylinderGeometry(rBottom,rTop,height,segmentO);
+            var planeMaterial = new THREE.MeshBasicMaterial({color: 0x2E8B57});
+            var cylinder = new THREE.Mesh(planeGeometry,planeMaterial);
+            
+            cylinder.position.set(0,y_trasl,0);
+
+            return cylinder;
+          }
+
+          function generateSphere(radius ,vertica , horizontal){
+            var geometry_m = new THREE.SphereGeometry(radius,vertica,horizontal);
+            var material_m = new THREE.MeshBasicMaterial({color: 0xff0000})
+            var sphere = new THREE.Mesh(geometry_m , material_m);
+              
+            return sphere
+          }
+
+          function generatePivot(a_transl,toAdd1){
+            var pin = generateSphere(2,20,20);
+            pin.position.set(0,a_transl,0);
+
+            //pin1.rotation.y = a1;
+            pin.add(toAdd1);
+
+            return pin;
+          }
+
+          function createArm(){
+            var arm = new THREE.Object3D();
+            var obj1 = generateObject3D(14);
+            //var pivot1 = generatePivot(2,obj1);
+            var pivot2 = generatePivot(2,obj1);
+            //pivot1.add(pivot2);
+
+            arm.pivot = pivot2;
+            arm.bone = obj1;
+
+            arm.add(pivot2);
+            arm.add(obj1);
+
+            return arm;
+          }
+
+          function addJoint2Arm(num_join){
+
+            if(num_join === 1){
+              return createArm();
+            }
+
+            var joint = createArm();
+            return joint.pivot.add(addJoint2Arm(--num_join));
+          }
+
+         });
+    </script>  
+ </body>
+</html>
